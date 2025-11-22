@@ -9,14 +9,13 @@
     "dev": "nodemon index.js",
     "server": "npm run dev",
     "resend": "node resend.js"
-
   },
- 
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^4.21.2",
-    "nodemailer": "^6.10.1"
+    "nodemailer": "^6.10.1",
+    "resend": "^6.5.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"

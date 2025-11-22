@@ -246,6 +246,7 @@ export default function Contact() {
                     <>
                       Send Message
                       <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/telegram.svg" alt="Send" className="w-5 h-5 ml-2" />
+
                     </>
                   )}
                 </motion.button>
