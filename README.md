@@ -1,7 +1,7 @@
 # 🚀 Feleke Eshetu - Portfolio
 
 A modern, interactive 3D portfolio built with **React**, **Three.js**, and **Tailwind CSS**. Features cyber-themed animations, smooth transitions, and a responsive design showcasing my full-stack development projects.
-
+<img src="./public/image.png" alt="show case">
 ## 🌐 Live Demo
 
 [![Vercel](https://img.shields.io/badge/Vercel-Live%20Demo-black?style=for-the-badge&logo=vercel)](https://feleke-portfolio.vercel.app)
