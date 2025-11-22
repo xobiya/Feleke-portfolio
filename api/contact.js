@@ -1,5 +1,5 @@
 import { Resend } from 'resend';
-
+import process from 'process';
 const resend = new Resend(process.env.RESEND_API_KEY ?? '');
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
