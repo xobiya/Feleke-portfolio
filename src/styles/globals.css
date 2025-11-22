@@ -1,0 +1,199 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap'); */
+
+/* Custom CSS Variables */
+:root {
+  --color-cyber-cyan: #00F5FF;
+  --color-neon-pink: #FF00F5;
+  --color-dark-space: #0A0A0A;
+  --color-stellar-gray: #1A1A1A;
+  --color-cosmic-white: #FFFFFF;
+}
+
+/* Base Styles */
+@layer base {
+  * {
+    @apply m-0 p-0 box-border;
+  }
+
+  html {
+    @apply scroll-smooth bg-dark-space;
+  }
+
+  body {
+    @apply font-inter bg-dark-space text-cosmic-white overflow-x-hidden;
+    cursor: auto;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-cyber font-bold;
+  }
+
+  code, pre {
+    @apply font-mono;
+  }
+}
+
+/* Custom Cursor */
+@layer components {
+  .custom-cursor {
+    @apply w-5 h-5 border-2 border-cyber-cyan rounded-full fixed pointer-events-none z-[9999] mix-blend-difference;
+    transition: transform 0.2s ease;
+  }
+
+  .cursor-follower {
+    @apply w-2 h-2 bg-cyber-cyan rounded-full fixed pointer-events-none z-[9998] mix-blend-difference;
+    transition: transform 0.1s ease;
+  }
+
+  /* Hide custom cursor elements so the system cursor remains visible */
+  .custom-cursor,
+  .cursor-follower {
+    display: none !important;
+  }
+
+  /* Glass Morphism Components */
+  .glass {
+    @apply bg-dark-space/80 backdrop-blur-md border border-cyber-cyan/20;
+  }
+
+  .glass-cyber {
+    @apply bg-cyber-cyan/10 backdrop-blur-lg border border-cyber-cyan/30 shadow-lg shadow-cyber-cyan/10;
+  }
+
+  /* Cyber Button Components */
+  .btn-cyber {
+    @apply px-6 py-3 bg-cyber-cyan text-dark-space font-cyber font-bold rounded-lg 
+           transition-all duration-300 border-2 border-cyber-cyan 
+           hover:bg-cyber-cyan/80 hover:shadow-lg hover:shadow-cyber-cyan/50
+           active:scale-95;
+  }
+
+  .btn-cyber-outline {
+    @apply px-6 py-3 bg-transparent text-cyber-cyan font-cyber font-bold rounded-lg 
+           transition-all duration-300 border-2 border-cyber-cyan 
+           hover:bg-cyber-cyan/10 hover:shadow-lg hover:shadow-cyber-cyan/30
+           active:scale-95;
+  }
+
+  /* Text Gradient Utilities */
+  .text-gradient-cyber {
+    @apply bg-gradient-to-r from-cyber-cyan to-neon-pink bg-clip-text text-transparent;
+  }
+
+  .text-gradient-minimal {
+    @apply bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent;
+  }
+
+  /* Animation Utilities */
+  .float-animation {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .glow-effect {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .hologram-effect {
+    animation: hologram 3s ease-in-out infinite;
+  }
+
+  .matrix-bg {
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 245, 255, 0.1) 50%,
+      transparent 100%
+    );
+    background-size: 100% 10px;
+    animation: matrix 20s linear infinite;
+  }
+
+  .cyber-grid {
+    @apply bg-grid-pattern bg-[length:50px_50px];
+  }
+
+  /* Section Wrappers */
+  .section-wrapper {
+    @apply min-h-screen py-20 px-4 sm:px-6 lg:px-8 relative;
+  }
+
+  .section-title {
+    @apply text-4xl md:text-6xl font-cyber font-bold text-gradient-cyber mb-16 text-center;
+  }
+
+  /* Card Components */
+  .card-cyber {
+    @apply glass rounded-xl p-6 transition-all duration-500 hover:glass-cyber 
+           hover:scale-105 hover:-translate-y-2;
+  }
+
+  .card-hologram {
+    @apply card-cyber hologram-effect border-neon-pink/30;
+  }
+}
+
+/* Scrollbar Styling */
+@layer utilities {
+  .scrollbar-cyber {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.cyber-cyan') theme('colors.dark-space');
+  }
+
+  .scrollbar-cyber::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  .scrollbar-cyber::-webkit-scrollbar-track {
+    @apply bg-dark-space;
+  }
+
+  .scrollbar-cyber::-webkit-scrollbar-thumb {
+    @apply bg-gradient-to-b from-cyber-cyan to-neon-pink rounded-full;
+  }
+
+  .scrollbar-cyber::-webkit-scrollbar-thumb:hover {
+    @apply bg-gradient-to-b from-neon-pink to-cyber-cyan;
+  }
+}
+
+/* Selection Color */
+::selection {
+  @apply bg-cyber-cyan text-dark-space;
+}
+
+::-moz-selection {
+  @apply bg-cyber-cyan text-dark-space;
+}
+
+/* Performance Optimizations */
+.transform-gpu {
+  transform: translateZ(0);
+}
+
+.will-change-transform {
+  will-change: transform;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  body {
+    cursor: default;
+  }
+  
+  .custom-cursor,
+  .cursor-follower {
+    @apply hidden;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
