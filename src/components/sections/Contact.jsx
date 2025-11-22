@@ -3,6 +3,8 @@ import SectionWrapper from '../shared/SectionWrapper';
 import { useState } from 'react';
 import contactMethods from '../../data/contact';
 
+const API_BASE_URL = (import.meta.env.VITE_API_URL ?? 'http://localhost:5000').replace(/\/$/, '');
+
 export default function Contact() {
   const [formData, setFormData] = useState({
     name: '',
@@ -17,7 +19,7 @@ export default function Contact() {
     setStatus({ loading: true, ok: null, message: '' });
 
     try {
-      const res = await fetch('http://localhost:5000/api/contact', {
+      const res = await fetch(`${API_BASE_URL}/api/contact`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

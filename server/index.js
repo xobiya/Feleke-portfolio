@@ -24,25 +24,29 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Create email transporter with better error handling
 const createTransporter = () => {
   // Check if we have Gmail credentials
   if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-    console.log('📧 Using Gmail transporter');
+    console.log('📧 Using Gmail transporter with alternative config');
     return nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false, // true for 465, false for other ports
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
-      // Add timeout settings
-      connectionTimeout: 10000, // 10 seconds
-      greetingTimeout: 10000,
-      socketTimeout: 15000,
+      // More aggressive timeout settings for Render
+      connectionTimeout: 30000, // 30 seconds
+      greetingTimeout: 30000,
+      socketTimeout: 30000,
+      // Additional options for better connectivity
+      tls: {
+        rejectUnauthorized: false
+      }
     });
   } else {
     console.log('⚠️  No email credentials found. Using Ethereal test account.');
-    // Create test account for development
     return nodemailer.createTransporter({
       host: 'smtp.ethereal.email',
       port: 587,
