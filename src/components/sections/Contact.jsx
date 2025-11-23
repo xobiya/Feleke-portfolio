@@ -4,10 +4,10 @@ import { useState } from 'react';
 import contactMethods from '../../data/contact';
 
 const API_BASE_URL = (import.meta.env.VITE_API_URL ?? '').trim();
-const CONTACT_ENDPOINT = API_BASE_URL
-  ? `${API_BASE_URL.replace(/\/$/, '')}/api/contact`
-  : '/api/contact';
-
+// const CONTACT_ENDPOINT = API_BASE_URL
+//   ? `${API_BASE_URL.replace(/\/$/, '')}/api/send-email`
+//   : '/api/send-email';
+const CONTACT_ENDPOINT = '/api/send-email';
 export default function Contact() {
   const [formData, setFormData] = useState({
     name: '',
@@ -22,7 +22,7 @@ export default function Contact() {
     setStatus({ loading: true, ok: null, message: '' });
 
     try {
-  const res = await fetch(CONTACT_ENDPOINT, {
+      const response = await fetch(CONTACT_ENDPOINT, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -31,16 +31,29 @@ export default function Contact() {
         body: JSON.stringify(formData)
       });
 
-      const data = await res.json();
+      const rawBody = await response.text();
+      let data = null;
+
+      if (rawBody) {
+        try {
+          data = JSON.parse(rawBody);
+        } catch (parseError) {
+          console.warn('Contact endpoint returned non-JSON payload:', parseError, rawBody);
+        }
+      }
       
-      if (!res.ok) {
-        throw new Error(data.message || 'Failed to send message');
+      if (!response.ok) {
+        const derivedMessage = data?.message || rawBody || `Request failed with status ${response.status}`;
+        const message = response.status === 404
+          ? 'Contact service is unavailable. Please verify VITE_API_URL or the backend deployment.'
+          : derivedMessage;
+        throw new Error(message);
       }
 
       setStatus({ 
         loading: false, 
         ok: true, 
-        message: 'Message sent successfully! I will get back to you soon.' 
+        message: data?.message || 'Message sent successfully! I will get back to you soon.' 
       });
       setFormData({ name: '', email: '', message: '' });
       
