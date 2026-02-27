@@ -27,7 +27,7 @@
       icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg',
       title: 'LinkedIn',
       value: 'feleke-eshetu',
-      link: 'https://www.linkedin.com/in/feleke-eshetu'
+      link: 'www.linkedin.com/in/feleke-eshetu-a6b4a0371'
     }
 
   ];
