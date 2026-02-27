@@ -147,7 +147,7 @@ export default function Contact() {
                 <div className="flex space-x-4">
                   {[
                     { name: 'GitHub', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg', url: 'https://github.com/xobiya' },
-                    { name: 'LinkedIn', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg', url: 'www.linkedin.com/in/feleke-eshetu-a6b4a0371' },
+                    { name: 'LinkedIn', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg', url: 'https://www.linkedin.com/in/feleke-eshetu-a6b4a0371' },
                     { name: 'Telegram', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/telegram.svg', url: 'https://t.me/xobiya' },
                     { name: 'Instagram', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg', url: 'https://www.instagram.com/feleke9063' }
                   ].map((social) => (
