@@ -43,7 +43,7 @@ export default function About() {
                 Hello! I’m <strong>Feleke Eshetu</strong>, a <strong>Full-Stack Developer</strong> focused on building reliable digital products that are fast, accessible, and user-friendly.
               </motion.p>
               <motion.p variants={itemVariants} className="text-lg text-gray-300 leading-relaxed">
-                My core stack includes <strong>React, Node.js, Express, MongoDB</strong>, and modern frontend tooling. I also build backend services, REST APIs, and authentication flows for end-to-end solutions.
+                My core stack includes <strong>React, Node.js, Express, MongoDB, and Laravel</strong>, and I implement secure <strong>payment integrations</strong> for end-to-end production solutions.
               </motion.p>
               <motion.p variants={itemVariants} className="text-lg text-gray-300 leading-relaxed">
                 I enjoy translating ideas into production-ready applications—from planning and UI implementation to deployment and iteration based on real feedback.

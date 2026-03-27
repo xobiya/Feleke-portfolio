@@ -20,6 +20,8 @@ export default function Projects() {
     ? projects 
     : projects.filter(project => project.category === activeFilter);
 
+  const isExternalUrl = (url) => typeof url === 'string' && /^https?:\/\//i.test(url);
+
   return (
     <SectionWrapper id="projects" className="section-wrapper">
       {(isInView) => (
@@ -76,18 +78,35 @@ export default function Projects() {
                 <img
                   src={project.image}
                   alt={project.title}
+                  loading="lazy"
                   className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-dark-space/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 
                 {/* Project Links */}
                 <div className="absolute top-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <a href={project.liveUrl} className="p-2 glass rounded-full hover:glass-cyber transition-all">
-                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/vercel.svg" alt="Live Demo" className="w-4 h-4" />
-                  </a>
-                  <a href={project.githubUrl} className="p-2 glass rounded-full hover:glass-cyber transition-all">
-                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg" alt="GitHub" className="w-4 h-4" />
-                  </a>
+                  {isExternalUrl(project.liveUrl) && (
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${project.title} live demo`}
+                      className="p-2 glass rounded-full hover:glass-cyber transition-all"
+                    >
+                      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/vercel.svg" alt="Live Demo" className="w-4 h-4" />
+                    </a>
+                  )}
+                  {isExternalUrl(project.githubUrl) && (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${project.title} source code`}
+                      className="p-2 glass rounded-full hover:glass-cyber transition-all"
+                    >
+                      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg" alt="GitHub" className="w-4 h-4" />
+                    </a>
+                  )}
                 </div>
               </div>
 
