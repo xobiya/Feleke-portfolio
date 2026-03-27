@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text, Float } from '@react-three/drei';
+import * as THREE from 'three';
 
 export function HologramCard({ project, position }) {
   const mesh = useRef();
