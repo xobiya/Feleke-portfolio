@@ -74,7 +74,7 @@ export default function Hero() {
           </motion.div>
 
           <div className="relative">
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-cyber font-black mb-4 min-h-[1.2em]">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-cyber font-black mb-4 min-h-[1.2em] tracking-tight">
               <span className="text-gradient-cyber relative">
                 {displayedName}
                 {/* Typing cursor */}
@@ -103,8 +103,8 @@ export default function Hero() {
             transition={{ delay: 1.2 }}
           >
             <AnimatedText
-              text="Software Engineer & Full-Stack Developer"
-              className="text-xl md:text-2xl text-gray-300 font-light mb-8"
+              text="Software Engineer • Full-Stack Developer"
+              className="text-xl md:text-2xl text-gray-300 font-light mb-8 tracking-wide"
             />
           </motion.div>
 
@@ -112,13 +112,13 @@ export default function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.5, duration: 0.8 }}
-            className="max-w-2xl mx-auto"
+            className="max-w-3xl mx-auto"
           >
-            <p className="text-lg md:text-xl text-gray-300 leading-relaxed rounded-2xl p-6  transition-all duration-500">
-  I transform ideas into production-ready applications. From concept to deployment, 
-  I build complete digital solutions that solve real problems and deliver exceptional 
-  user experiences.
-</p>
+            <p className="text-lg md:text-xl text-gray-300 leading-relaxed rounded-2xl p-6 transition-all duration-500 text-balance">
+              I transform ideas into production-ready applications.
+              From concept to deployment, I build complete digital solutions
+              that solve real problems and deliver exceptional user experiences.
+            </p>
           </motion.div>
 
           <motion.div

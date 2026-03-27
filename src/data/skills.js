@@ -67,6 +67,16 @@ export const skillCategories = [
         icon: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/php.svg"
       },
       {
+        name: "Laravel",
+        level: 78,
+        icon: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/laravel.svg"
+      },
+      {
+        name: "Payment Integration",
+        level: 80,
+        icon: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/stripe.svg"
+      },
+      {
         name: "Docker",
         level: 78,
         icon: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/docker.svg"
@@ -137,6 +147,16 @@ export const skills = [
     name: "Node.js",
     level: 82,
     icon: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/nodedotjs.svg"
+  },
+  {
+    name: "Laravel",
+    level: 78,
+    icon: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/laravel.svg"
+  },
+  {
+    name: "Payment Integration",
+    level: 80,
+    icon: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/stripe.svg"
   },
   {
     name: "Java",

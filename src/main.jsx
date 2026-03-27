@@ -25,7 +25,7 @@ class ErrorBoundary extends React.Component {
     this.state = { hasError: false }
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(_error) {
     return { hasError: true }
   }
 
@@ -36,7 +36,7 @@ class ErrorBoundary extends React.Component {
       this.setState({ hasError: true, error, errorInfo })
       // also expose last error to window for quick inspection
       if (typeof window !== 'undefined') window.__LAST_ERROR__ = { error, errorInfo }
-    } catch (e) {
+    } catch (_error) {
       // ignore setState errors during error handling
     }
   }
@@ -70,7 +70,7 @@ class ErrorBoundary extends React.Component {
                     const last = window.__LAST_ERROR__
                     navigator.clipboard.writeText(JSON.stringify(last, Object.getOwnPropertyNames(last)))
                     alert('Error details copied to clipboard')
-                  } catch (e) {
+                  } catch (_error) {
                     alert('Unable to copy error details')
                   }
                 }}
@@ -139,17 +139,17 @@ try {
             try {
               if (val && (val.version === undefined || val.version === '')) {
                 // assign a safe semver so DevTools won't throw when validating
-                try { val.version = '0.0.0'; } catch (e) { /* ignore */ }
+                try { val.version = '0.0.0'; } catch (_error) { /* ignore */ }
                 patchedAny = true;
               }
               if (val && (val.rendererPackageName === undefined || val.rendererPackageName === '')) {
-                try { val.rendererPackageName = val.rendererPackageName || 'unknown-renderer'; } catch (e) { /* ignore */ }
+                try { val.rendererPackageName = val.rendererPackageName || 'unknown-renderer'; } catch (_error) { /* ignore */ }
               }
-            } catch (e) {
+            } catch (_error) {
               // ignore per-renderer errors
             }
           });
-        } catch (e) {
+        } catch (_error) {
           // some hook implementations may not allow iteration; ignore
         }
 
@@ -166,7 +166,6 @@ try {
       }, 250);
     } catch (err) {
       // Do not block app startup for DevTools issues
-      // eslint-disable-next-line no-console
       console.warn('DevTools renderer patch failed', err);
     }
   }

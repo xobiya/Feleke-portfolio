@@ -1,16 +1,16 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
+const loadingSteps = [
+  'Initializing Systems',
+  'Loading 3D Assets',
+  'Calibrating Animations',
+  'Starting Feleke portfolio'
+];
+
 export default function LoadingScreen({ onLoadingComplete }) {
   const [progress, setProgress] = useState(0);
   const [currentText, setCurrentText] = useState('Initializing Systems');
-
-  const loadingSteps = [
-    'Initializing Systems',
-    'Loading 3D Assets',
-    'Calibrating Animations',
-    'Starting Feleke portfolio'
-  ];
 
   useEffect(() => {
     const timer = setInterval(() => {
