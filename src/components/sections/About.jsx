@@ -40,24 +40,24 @@ export default function About() {
               className="space-y-6"
             >
               <motion.p variants={itemVariants} className="text-lg text-gray-300 leading-relaxed">
-                Hello! I’m <strong>Feleke Eshetu</strong>, a passionate <strong>Full Stack Web Developer</strong> and <strong>Java Programmer</strong> currently pursuing my <strong>Software Engineering degree at Arba Minch University</strong>.
+                Hello! I’m <strong>Feleke Eshetu</strong>, a <strong>Full-Stack Developer</strong> focused on building reliable digital products that are fast, accessible, and user-friendly.
               </motion.p>
               <motion.p variants={itemVariants} className="text-lg text-gray-300 leading-relaxed">
-                I enjoy creating efficient, user-friendly, and visually appealing web applications while continuously learning new technologies and staying up-to-date with the latest in software development.
+                My core stack includes <strong>React, Node.js, Express, MongoDB, and Laravel</strong>, and I implement secure <strong>payment integrations</strong> for end-to-end production solutions.
               </motion.p>
               <motion.p variants={itemVariants} className="text-lg text-gray-300 leading-relaxed">
-                With experience in frontend and backend development, I specialize in <strong>Java, JavaScript, React, Node.js</strong>, and modern web frameworks. I’m driven by problem-solving, building scalable solutions, and contributing to projects that make a real impact.
+                I enjoy translating ideas into production-ready applications—from planning and UI implementation to deployment and iteration based on real feedback.
               </motion.p>
               <motion.p variants={itemVariants} className="text-lg text-gray-300 leading-relaxed">
-                When I’m not coding, I love exploring new tech trends, experimenting with innovative software ideas, and enhancing my skills to stay at the forefront of the software development world.
+                I’m currently pursuing a <strong>Software Engineering degree at Arba Minch University</strong> and continuously improving my craft through practical projects and collaboration.
               </motion.p>
 
               {/* Stats */}
               <motion.div variants={itemVariants} className="grid grid-cols-3 gap-4 pt-6">
                 {[
                   { number: '10+', label: 'Projects' },
-                  { number: '2+', label: 'Years' },
-                  { number: '100%', label: 'Passion' }
+                  { number: '3+', label: 'Stacks' },
+                  { number: '100%', label: 'Commitment' }
                 ].map((stat, index) => (
                   <div key={index} className="text-center">
                     <div className="text-2xl font-cyber text-cyber-cyan mb-1">{stat.number}</div>
