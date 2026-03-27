@@ -4,7 +4,7 @@ import { BlendFunction } from 'postprocessing';
 import { ParticleField } from './ParticleField';
 
 export default function Scene() {
-  const { gl } = useThree();
+  useThree();
   
   return (
     <>

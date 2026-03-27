@@ -1,4 +1,4 @@
-import { useScroll, useTransform, motionValue } from 'framer-motion';
+import { useScroll, useTransform } from 'framer-motion';
 
 export function useScrollAnimation() {
   const { scrollYProgress } = useScroll();
