@@ -48,9 +48,19 @@ function AnimatedRoutes() {
             <Skills />
           </>
         } />
+        <Route path="/skill" element={
+          <>
+            <Skills />
+          </>
+        } />
         <Route path="/about" element={
           <>
             <About expanded={true} />
+          </>
+        } />
+        <Route path="/contact" element={
+          <>
+            <Contact />
           </>
         } />
       </Routes>
