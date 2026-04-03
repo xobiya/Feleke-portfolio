@@ -126,7 +126,7 @@ export default function Contact() {
                     rel={method.link.startsWith('http') ? 'noopener noreferrer' : undefined}
                   >
                     <div className="w-12 h-12 rounded-lg glass flex items-center justify-center group-hover:glass-cyber transition-all">
-                      <img src={method.icon} alt={method.title} className="w-6 h-6" />
+                      <img src={method.icon} alt={method.title} className="w-6 h-6 icon-cyber" />
                     </div>
                     <div>
                       <div className="text-cyber-cyan font-semibold">{method.title}</div>
@@ -158,7 +158,7 @@ export default function Contact() {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <img src={social.icon} alt={social.name} className="w-5 h-5" />
+                      <img src={social.icon} alt={social.name} className="w-5 h-5 icon-cyber" />
                     </a>
                   ))}
                 </div>
@@ -261,7 +261,7 @@ export default function Contact() {
                   ) : (
                     <>
                       Send Message
-                      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/telegram.svg" alt="Send" className="w-5 h-5 ml-2" />
+                      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/telegram.svg" alt="Send" className="w-5 h-5 ml-2 icon-cyber" />
 
                     </>
                   )}
