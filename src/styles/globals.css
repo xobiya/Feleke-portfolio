@@ -133,6 +133,10 @@
   .card-hologram {
     @apply card-cyber hologram-effect border-neon-pink/30;
   }
+
+  .icon-cyber {
+    filter: brightness(0) saturate(100%) invert(76%) sepia(61%) saturate(2661%) hue-rotate(142deg) brightness(104%) contrast(103%);
+  }
 }
 
 /* Scrollbar Styling */

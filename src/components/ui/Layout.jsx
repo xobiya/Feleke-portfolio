@@ -40,7 +40,7 @@ export default function Layout({ children }) {
               <img 
                 src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg" 
                 alt="GitHub" 
-                className="w-6 h-6 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" 
+                className="w-6 h-6 icon-cyber group-hover:opacity-80 transition-all duration-300" 
               />
             </a>
             
@@ -54,7 +54,7 @@ export default function Layout({ children }) {
               <img 
                 src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" 
                 alt="LinkedIn" 
-                className="w-6 h-6 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" 
+                className="w-6 h-6 icon-cyber group-hover:opacity-80 transition-all duration-300" 
               />
             </a>
             
@@ -68,7 +68,7 @@ export default function Layout({ children }) {
               <img 
                 src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg" 
                 alt="Twitter" 
-                className="w-6 h-6 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" 
+                className="w-6 h-6 icon-cyber group-hover:opacity-80 transition-all duration-300" 
               />
             </a>
             
@@ -82,7 +82,7 @@ export default function Layout({ children }) {
               <img 
                 src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" 
                 alt="Instagram" 
-                className="w-6 h-6 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" 
+                className="w-6 h-6 icon-cyber group-hover:opacity-80 transition-all duration-300" 
               />
             </a>
             
@@ -94,7 +94,7 @@ export default function Layout({ children }) {
               <img 
                 src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/gmail.svg" 
                 alt="Email" 
-                className="w-6 h-6 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300" 
+                className="w-6 h-6 icon-cyber group-hover:opacity-80 transition-all duration-300" 
               />
             </a>
           </div>
