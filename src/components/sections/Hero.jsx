@@ -25,7 +25,14 @@ export default function Hero() {
     }
   }, [nameIndex]);
 
-
+  const heroVariants = {
+    hidden: { opacity: 0, y: 30 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.9, staggerChildren: 0.15 }
+    }
+  };
 
   return (
     <SectionWrapper id="hero" className="min-h-screen relative flex items-center justify-center overflow-hidden">
@@ -55,12 +62,24 @@ export default function Hero() {
         </div>
       </div>
 
+      {/* Ambient glowing orbs */}
+      <motion.div
+        className="absolute top-24 right-10 w-44 h-44 rounded-full bg-cyber-cyan/10 blur-3xl z-0"
+        animate={{ x: [0, 20, 0], y: [0, -16, 0], opacity: [0.2, 0.5, 0.2] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute bottom-24 left-10 w-56 h-56 rounded-full bg-neon-pink/10 blur-3xl z-0"
+        animate={{ x: [0, -16, 0], y: [0, 18, 0], opacity: [0.15, 0.4, 0.15] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
+
       {/* Content */}
       <div className="relative z-10 text-center container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
+          variants={heroVariants}
+          initial="hidden"
+          animate="show"
           className="space-y-6"
         >
           <motion.div
@@ -160,6 +179,24 @@ export default function Hero() {
                 transition={{ duration: 0.3 }}
               />
             </motion.a>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 2.2, duration: 0.6 }}
+            className="flex flex-wrap justify-center gap-3 pt-2"
+          >
+            {['Open to Work', 'Remote Friendly', 'Fast Delivery'].map((badge, index) => (
+              <motion.span
+                key={badge}
+                className="px-4 py-2 rounded-full border border-cyber-cyan/30 text-sm text-cyber-cyan glass"
+                animate={{ y: [0, -4, 0] }}
+                transition={{ duration: 2 + index * 0.3, repeat: Infinity, ease: "easeInOut" }}
+              >
+                {badge}
+              </motion.span>
+            ))}
           </motion.div>
 
         </motion.div>
