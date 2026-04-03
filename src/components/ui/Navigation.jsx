@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import navigation from '../../data/navigation.js';
 
 function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
 
   const navItems = navigation;
 
@@ -22,30 +21,6 @@ function Navigation() {
             
             <div className="flex items-center space-x-8">
               {navItems.map((item) => {
-                // Special handling for in-page anchors (Contact and Skills sections)
-                if (item.name === 'Contact' || item.name === 'Skills') {
-                  const anchorId = item.name === 'Contact' ? 'contact' : 'skills';
-                  return (
-                    <a
-                      key={item.name}
-                      href={`#${anchorId}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        // If we're not on the home route, navigate there and request a scroll via state
-                        if (location.pathname !== '/') {
-                          navigate('/', { state: { scrollTo: anchorId } });
-                        } else {
-                          const el = document.getElementById(anchorId);
-                          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                      }}
-                      className={`relative font-cyber text-sm uppercase tracking-wider transition-all duration-300 text-gray-400 hover:text-white`}
-                    >
-                      {item.name}
-                    </a>
-                  );
-                }
-
                 return (
                   <Link
                     key={item.name}
@@ -120,41 +95,13 @@ function Navigation() {
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  {(item.name === 'Contact' || item.name === 'Skills') ? (
-                    (() => {
-                      const anchorId = item.name === 'Contact' ? 'contact' : 'skills';
-                      return (
-                        <a
-                          href={`#${anchorId}`}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setIsOpen(false);
-                            if (location.pathname !== '/') {
-                              navigate('/');
-                              setTimeout(() => {
-                                const el = document.getElementById(anchorId);
-                                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                              }, 120);
-                            } else {
-                              const el = document.getElementById(anchorId);
-                              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                            }
-                          }}
-                          className="text-2xl font-cyber text-gradient-cyber block py-4 hover:scale-110 transition-transform"
-                        >
-                          {item.name}
-                        </a>
-                      );
-                    })()
-                  ) : (
-                    <Link
-                      to={item.path}
-                      onClick={() => setIsOpen(false)}
-                      className="text-2xl font-cyber text-gradient-cyber block py-4 hover:scale-110 transition-transform"
-                    >
-                      {item.name}
-                    </Link>
-                  )}
+                  <Link
+                    to={item.path}
+                    onClick={() => setIsOpen(false)}
+                    className="text-2xl font-cyber text-gradient-cyber block py-4 hover:scale-110 transition-transform"
+                  >
+                    {item.name}
+                  </Link>
                 </motion.div>
               ))}
 
