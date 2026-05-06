@@ -34,7 +34,7 @@ import SubTrack from '../Assets/Subscription.png';
   image: Travel,
   tags: ['HTML', 'TailwindCSS', 'PHP', 'MySQL'],
   category: 'Fullstack',
-  liveUrl: '#',
+  liveUrl: 'https://oggetrave.free.nf/',
   githubUrl: 'https://github.com/xobiya/Ogge-Travel.git'
 },
 
