@@ -26,3 +26,9 @@ dist-ssr
 # Environment variables
 .env
 .env.local
+
+# Agent skills & customizations
+.agents
+.agents/
+skills
+skills/

@@ -1,21 +1,44 @@
-import { motion } from 'framer-motion';
-import SectionWrapper from '../shared/SectionWrapper';
 import { useState } from 'react';
-import contactMethods from '../../data/contact';
+import { motion } from 'framer-motion';
+import { contactMethods, projectTypes } from '../../data/contact';
+import { useLanguage } from '../../context/LanguageContext';
+import { useTheme } from '../../context/ThemeContext';
+import {
+  Mail,
+  Send,
+  Linkedin,
+  Github,
+  Phone,
+  CheckCircle,
+  ExternalLink
+} from '../shared/Icons';
 
-const API_BASE_URL = (import.meta.env.VITE_API_URL ?? '').trim();
-// const CONTACT_ENDPOINT = API_BASE_URL
-//   ? `${API_BASE_URL.replace(/\/$/, '')}/api/send-email`
-//   : '/api/send-email';
 const CONTACT_ENDPOINT = '/api/send-email';
+
 export default function Contact() {
+  const { t } = useLanguage();
+  const { isDark } = useTheme();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    projectType: projectTypes[0],
     message: ''
   });
 
-  const [status, setStatus] = useState({ loading: false, ok: null, message: '' });
+  const [status, setStatus] = useState({
+    loading: false,
+    ok: null,
+    message: ''
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (status.message) {
+      setStatus({ loading: false, ok: null, message: '' });
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,253 +47,351 @@ export default function Contact() {
     try {
       const response = await fetch(CONTACT_ENDPOINT, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Accept: 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: `[DOMAIN: ${formData.projectType}]\n\n${formData.message}`
+        })
       });
 
       const rawBody = await response.text();
       let data = null;
-
-      if (rawBody) {
-        try {
-          data = JSON.parse(rawBody);
-        } catch (parseError) {
-          console.warn('Contact endpoint returned non-JSON payload:', parseError, rawBody);
-        }
-      }
-      
-      if (!response.ok) {
-        const derivedMessage = data?.message || rawBody || `Request failed with status ${response.status}`;
-        const message = response.status === 404
-          ? 'Contact service is unavailable. Please verify VITE_API_URL or the backend deployment.'
-          : derivedMessage;
-        throw new Error(message);
+      try {
+        data = JSON.parse(rawBody);
+      } catch {
+        data = { success: response.ok, message: rawBody };
       }
 
-      setStatus({ 
-        loading: false, 
-        ok: true, 
-        message: data?.message || 'Message sent successfully! I will get back to you soon.' 
-      });
-      setFormData({ name: '', email: '', message: '' });
-      
-    } catch (err) {
-      console.error('Contact form error:', err);
-      setStatus({ 
-        loading: false, 
-        ok: false, 
-        message: err.message || 'Failed to send message. Please try again later or email me directly.' 
+      if (response.ok && data?.success !== false) {
+        setStatus({
+          loading: false,
+          ok: true,
+          message: 'Transmission received. I will review and reply within 24 hours.'
+        });
+        setFormData({
+          name: '',
+          email: '',
+          projectType: projectTypes[0],
+          message: ''
+        });
+      } else {
+        setStatus({
+          loading: false,
+          ok: false,
+          message: data?.error || data?.message || 'Transmission failed. Direct email available.'
+        });
+      }
+    } catch {
+      setStatus({
+        loading: false,
+        ok: false,
+        message: 'Network error. Please use direct email.'
       });
     }
   };
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-    // Clear status when user starts typing again
-    if (status.message) {
-      setStatus({ loading: false, ok: null, message: '' });
-    }
+  const iconMap = {
+    Email: Mail,
+    Telegram: Send,
+    LinkedIn: Linkedin,
+    GitHub: Github,
+    Phone: Phone
   };
 
   return (
-    <SectionWrapper id="contact" className="section-wrapper">
-      {(isInView) => (
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="section-title">Get In Touch</h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-cyber-cyan to-neon-pink mx-auto mb-8" />
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Ready to bring your next project to life? Let's create something extraordinary together.
-            </p>
-          </motion.div>
+    <section id="contact" className={`relative py-24 lg:py-32 border-t transition-colors duration-300 overflow-hidden bg-transparent ${
+      isDark ? 'border-[#1b253b]' : 'border-slate-200'
+    }`}>
+      {/* Background Lighting */}
+      <div className={`absolute top-1/2 right-0 w-96 h-96 rounded-full blur-3xl pointer-events-none ${
+        isDark ? 'bg-cyan-500/[0.03]' : 'bg-blue-400/[0.04]'
+      }`} />
 
-          <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-            {/* Contact Information */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
-              transition={{ duration: 0.8 }}
-              className="space-y-8"
-            >
-              <h3 className="text-3xl font-cyber text-gradient-cyber mb-6">
-                Let's Connect
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Section Masthead */}
+        <div className="max-w-3xl mb-14">
+          <div className="section-eyebrow flex items-center gap-2">
+            <span className={isDark ? 'text-[#00ff66]' : 'text-blue-600'}>&gt;&gt;</span>
+            <span className={isDark ? 'text-[#00ff66]' : 'text-blue-600'}>GET IN TOUCH</span>
+          </div>
+          <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-black font-mono tracking-tight ${
+            isDark ? 'text-white' : 'text-gray-900'
+          }`}>
+            Have a Project in Mind? Let&apos;s Build Together.
+          </h2>
+          <p className={`text-sm sm:text-base font-mono mt-3 ${
+            isDark ? 'text-zinc-400' : 'text-gray-600'
+          }`}>
+            Whether you require a custom enterprise ERP system, high-throughput backend APIs, or modern web applications, send your project requirements directly.
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+          
+          {/* Direct Communication Channels (5 cols) */}
+          <div className="lg:col-span-5 space-y-4 font-mono">
+            <div>
+              <h3 className={`text-sm font-bold uppercase tracking-wider mb-1 ${
+                isDark ? 'text-white' : 'text-gray-900'
+              }`}>
+                COMMUNICATION CHANNELS
               </h3>
-              
-              <p className="text-lg text-gray-300 leading-relaxed">
-                I'm always interested in hearing about new opportunities, 
-                innovative projects, or just chatting about technology and design.
+              <p className={`text-xs ${isDark ? 'text-zinc-500' : 'text-gray-500'}`}>
+                Guaranteed response latency: &lt; 24h
               </p>
+            </div>
 
-              {/* Contact Methods */}
-              <div className="space-y-4">
-                {contactMethods.map((method, index) => (
-                  <motion.a
+            <div className="space-y-2.5">
+              {contactMethods.map((method) => {
+                const IconComponent = iconMap[method.title] || Mail;
+
+                return (
+                  <a
                     key={method.title}
                     href={method.link}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="flex items-center space-x-4 p-4 card-cyber hover:glass-cyber transition-all group"
                     target={method.link.startsWith('http') ? '_blank' : undefined}
                     rel={method.link.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    className={`terminal-window p-3.5 rounded-2xl flex items-center justify-between group transition-all border ${
+                      isDark 
+                        ? 'bg-[#070b16] border-[#1b2b48] hover:border-cyan-500/50 hover:bg-[#0c1527]' 
+                        : 'bg-gray-50 border-gray-200 hover:border-blue-400 hover:bg-blue-50/50 shadow-sm'
+                    }`}
                   >
-                    <div className="w-12 h-12 rounded-lg glass flex items-center justify-center group-hover:glass-cyber transition-all">
-                      <img src={method.icon} alt={method.title} className="w-6 h-6 icon-cyber" />
+                    <div className="flex items-center gap-3">
+                      <div className={`w-9 h-9 rounded-xl border flex items-center justify-center group-hover:scale-105 transition-transform ${
+                        isDark ? 'bg-[#101b2f] border-[#1e2f50] text-[#00ff66]' : 'bg-white border-gray-200 text-blue-600 shadow-sm'
+                      }`}>
+                        <IconComponent className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-xs font-bold transition-colors ${
+                            isDark ? 'text-white group-hover:text-cyan-400' : 'text-gray-900 group-hover:text-blue-600'
+                          }`}>
+                            {method.title}
+                          </span>
+                          <span className="hud-badge-dim text-[10px] py-0 px-1.5">
+                            {method.badge}
+                          </span>
+                        </div>
+                        <div className={`text-[11px] ${isDark ? 'text-zinc-400' : 'text-gray-500'}`}>
+                          {method.value}
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="text-cyber-cyan font-semibold">{method.title}</div>
-                      <div className="text-gray-300">{method.value}</div>
-                    </div>
-                  </motion.a>
-                ))}
+
+                    <ExternalLink className={`w-3.5 h-3.5 transition-all ${
+                      isDark ? 'text-zinc-500 group-hover:text-white' : 'text-gray-400 group-hover:text-gray-900'
+                    }`} />
+                  </a>
+                );
+              })}
+            </div>
+
+            {/* Direct Email Fallback */}
+            <div className={`terminal-window p-4 rounded-2xl border text-xs ${
+              isDark ? 'border-cyan-500/30 bg-[#071120]' : 'border-blue-200 bg-blue-50/60 shadow-sm'
+            }`}>
+              <div className={`font-bold mb-1 ${isDark ? 'text-cyan-400' : 'text-blue-700'}`}>
+                DIRECT EMAIL INQUIRY
+              </div>
+              <p className={`leading-relaxed mb-2 text-[11px] ${isDark ? 'text-zinc-400' : 'text-gray-600'}`}>
+                Deliver technical specifications or job descriptions directly to:
+              </p>
+              <a
+                href="mailto:eshetufeleke21@gmail.com"
+                className={`font-bold underline transition-colors ${
+                  isDark ? 'text-white hover:text-cyan-400' : 'text-blue-700 hover:text-blue-900'
+                }`}
+              >
+                eshetufeleke21@gmail.com
+              </a>
+            </div>
+          </div>
+
+          {/* Structured Inquiry Form (7 cols) */}
+          <div className="lg:col-span-7">
+            <div className={`terminal-window p-5 sm:p-7 rounded-3xl border relative font-mono ${
+              isDark ? 'border-[#1b2b48] bg-[#070b16]' : 'border-gray-200 bg-white shadow-xl'
+            }`}>
+              
+              <div className={`flex items-center justify-between pb-3 mb-4 border-b text-xs ${
+                isDark ? 'border-[#1b2b48] text-zinc-400' : 'border-gray-200 text-gray-500'
+              }`}>
+                <span className={`font-bold ${isDark ? 'text-[#00ff66]' : 'text-blue-600'}`}>
+                  &gt;&gt; INQUIRY FORM
+                </span>
+                <span>STATUS: READY</span>
               </div>
 
-              {/* Social Links */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="pt-6"
-              >
-                <h4 className="text-lg font-cyber text-cyber-cyan mb-4">Follow My Journey</h4>
-                <div className="flex space-x-4">
-                  {[
-                    { name: 'GitHub', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg', url: 'https://github.com/xobiya' },
-                    { name: 'LinkedIn', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg', url: 'https://www.linkedin.com/in/feleke-eshetu-a6b4a0371' },
-                    { name: 'Telegram', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/telegram.svg', url: 'https://t.me/xobiya' },
-                    { name: 'Instagram', icon: 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg', url: 'https://www.instagram.com/feleke9063' }
-                  ].map((social) => (
-                    <a
-                      key={social.name}
-                      href={social.url}
-                      className="p-3 glass rounded-lg hover:glass-cyber transition-all group"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <img src={social.icon} alt={social.name} className="w-5 h-5 icon-cyber" />
-                    </a>
-                  ))}
-                </div>
-              </motion.div>
-            </motion.div>
-
-            {/* Contact Form */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="card-cyber p-8"
-            >
-              {/* Status Message */}
+              {/* Status Banner */}
               {status.message && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`p-4 rounded-lg mb-6 border ${
-                    status.ok 
-                      ? 'bg-green-500/20 border-green-500/50 text-green-400' 
-                      : 'bg-red-500/20 border-red-500/50 text-red-400'
+                  className={`p-3.5 rounded-xl mb-4 text-xs flex items-start gap-2.5 border ${
+                    status.ok
+                      ? isDark
+                        ? 'bg-[#00ff66]/10 border-[#00ff66]/40 text-[#00ff66]'
+                        : 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                      : 'bg-red-500/10 border-red-500/40 text-red-500'
                   }`}
                 >
-                  {status.message}
+                  <CheckCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <p className="font-bold">{status.message}</p>
+                    {!status.ok && (
+                      <a
+                        href={`mailto:eshetufeleke21@gmail.com?subject=Project Inquiry from ${formData.name || 'Portfolio'}&body=${encodeURIComponent(formData.message)}`}
+                        className="underline font-mono block hover:opacity-80"
+                      >
+                        [OPEN DEFAULT MAIL CLIENT]
+                      </a>
+                    )}
+                  </div>
                 </motion.div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block text-cyber-cyan font-cyber text-sm uppercase tracking-wider mb-2">
-                    Your Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    disabled={status.loading}
-                    className="w-full px-4 py-3 bg-dark-space border border-cyber-cyan/30 rounded-lg focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan transition-all text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                    placeholder="Enter your name"
-                  />
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label
+                      htmlFor="name"
+                      className={`text-xs uppercase tracking-wider font-bold block ${
+                        isDark ? 'text-zinc-400' : 'text-gray-700'
+                      }`}
+                    >
+                      YOUR NAME <span className={isDark ? 'text-[#00ff66]' : 'text-blue-600'}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      disabled={status.loading}
+                      placeholder="e.g. Dawit Kebede"
+                      className={`w-full px-3.5 py-2.5 rounded-xl border outline-none text-xs transition-all disabled:opacity-50 ${
+                        isDark
+                          ? 'bg-[#03060f] border-[#1b2b48] text-white focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 placeholder:text-zinc-600'
+                          : 'bg-gray-50 border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400'
+                      }`}
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label
+                      htmlFor="email"
+                      className={`text-xs uppercase tracking-wider font-bold block ${
+                        isDark ? 'text-zinc-400' : 'text-gray-700'
+                      }`}
+                    >
+                      YOUR EMAIL <span className={isDark ? 'text-[#00ff66]' : 'text-blue-600'}>*</span>
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      disabled={status.loading}
+                      placeholder="dawit@company.com"
+                      className={`w-full px-3.5 py-2.5 rounded-xl border outline-none text-xs transition-all disabled:opacity-50 ${
+                        isDark
+                          ? 'bg-[#03060f] border-[#1b2b48] text-white focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 placeholder:text-zinc-600'
+                          : 'bg-gray-50 border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400'
+                      }`}
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label htmlFor="email" className="block text-cyber-cyan font-cyber text-sm uppercase tracking-wider mb-2">
-                    Email Address
+                <div className="space-y-1.5">
+                  <label
+                    htmlFor="projectType"
+                    className={`text-xs uppercase tracking-wider font-bold block ${
+                      isDark ? 'text-zinc-400' : 'text-gray-700'
+                    }`}
+                  >
+                    PROJECT CATEGORY
                   </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
+                  <select
+                    id="projectType"
+                    name="projectType"
+                    value={formData.projectType}
                     onChange={handleChange}
-                    required
                     disabled={status.loading}
-                    className="w-full px-4 py-3 bg-dark-space border border-cyber-cyan/30 rounded-lg focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan transition-all text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                    placeholder="your.email@example.com"
-                  />
+                    className={`w-full px-3.5 py-2.5 rounded-xl border outline-none text-xs transition-all disabled:opacity-50 ${
+                      isDark
+                        ? 'bg-[#03060f] border-[#1b2b48] text-white focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400'
+                        : 'bg-gray-50 border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                    }`}
+                  >
+                    {projectTypes.map((type) => (
+                      <option key={type} value={type} className={isDark ? 'bg-[#03060f] text-white' : 'bg-white text-gray-900'}>
+                        {type}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
-                <div>
-                  <label htmlFor="message" className="block text-cyber-cyan font-cyber text-sm uppercase tracking-wider mb-2">
-                    Your Message
+                <div className="space-y-1.5">
+                  <label
+                    htmlFor="message"
+                    className={`text-xs uppercase tracking-wider font-bold block ${
+                      isDark ? 'text-zinc-400' : 'text-gray-700'
+                    }`}
+                  >
+                    PROJECT SCOPE &amp; OBJECTIVES <span className={isDark ? 'text-[#00ff66]' : 'text-blue-600'}>*</span>
                   </label>
                   <textarea
                     id="message"
                     name="message"
+                    rows="4"
                     value={formData.message}
                     onChange={handleChange}
                     required
-                    rows="5"
                     disabled={status.loading}
-                    className="w-full px-4 py-3 bg-dark-space border border-cyber-cyan/30 rounded-lg focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan transition-all text-white resize-none disabled:opacity-50 disabled:cursor-not-allowed"
-                    placeholder="Tell me about your project..."
+                    placeholder="Describe your project goals, timelines, or requirements..."
+                    className={`w-full px-3.5 py-2.5 rounded-xl border outline-none text-xs transition-all resize-none disabled:opacity-50 ${
+                      isDark
+                        ? 'bg-[#03060f] border-[#1b2b48] text-white focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 placeholder:text-zinc-600'
+                        : 'bg-gray-50 border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400'
+                    }`}
                   />
                 </div>
 
-                <motion.button
+                <button
                   type="submit"
                   disabled={status.loading}
-                  whileHover={!status.loading ? { scale: 1.02 } : {}}
-                  whileTap={!status.loading ? { scale: 0.98 } : {}}
-                  className={`w-full text-lg py-4 font-semibold rounded-lg transition-all flex items-center justify-center ${
-                    status.loading 
-                      ? 'bg-gray-600 cursor-not-allowed' 
-                      : 'btn-cyber hover:shadow-lg hover:shadow-cyber-cyan/30'
-                  }`}
+                  className="btn-cyber-primary w-full py-3.5 text-xs font-bold justify-center"
                 >
                   {status.loading ? (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Sending...
-                    </>
+                    <span className="flex items-center gap-2">
+                      <span className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                      <span>TRANSMITTING...</span>
+                    </span>
                   ) : (
-                    <>
-                      Send Message
-                      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/telegram.svg" alt="Send" className="w-5 h-5 ml-2 icon-cyber" />
-
-                    </>
+                    <span className="flex items-center gap-2">
+                      <span>SEND MESSAGE</span>
+                      <Send className="w-3.5 h-3.5" />
+                    </span>
                   )}
-                </motion.button>
+                </button>
               </form>
-            </motion.div>
+
+            </div>
           </div>
+
         </div>
-      )}
-    </SectionWrapper>
+
+      </div>
+    </section>
   );
 }

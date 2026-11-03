@@ -1,234 +1,252 @@
-import { motion } from 'framer-motion';
-import { Canvas } from '@react-three/fiber';
-import { ParticleField } from '../three/ParticleField';
-import AnimatedText from '../shared/AnimatedText';
-import SectionWrapper from '../shared/SectionWrapper';
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { useTheme } from '../../context/ThemeContext';
+import { 
+  ArrowRight, 
+  Github, 
+  Linkedin, 
+  Mail, 
+  Download, 
+  Telegram 
+} from '../shared/Icons';
+import { resumeConfig } from '../../data/navigation';
+import felekeDeskPhoto from '../../Assets/feleke.jpg';
 
 export default function Hero() {
-  const [displayedName, setDisplayedName] = useState('');
-  const [nameIndex, setNameIndex] = useState(0);
-  const fullName = "Feleke Eshetu";
+  const { isDark } = useTheme();
 
-  const scrollToProjects = () => {
-    document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
-  };
+  // Dynamic Typewriter Effect for the Headline
+  const dynamicHeadlines = [
+    "Building Systems That Power Businesses.",
+    "Engineering Scalable Full-Stack Solutions.",
+    "Architecting Enterprise Cloud Platforms.",
+    "Automating High-Throughput Business Systems."
+  ];
 
-  // Typing animation for name
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [currentText, setCurrentText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
   useEffect(() => {
-    if (nameIndex < fullName.length) {
-      const timer = setTimeout(() => {
-        setDisplayedName(fullName.slice(0, nameIndex + 1));
-        setNameIndex(nameIndex + 1);
-      }, 150);
-      return () => clearTimeout(timer);
-    }
-  }, [nameIndex]);
+    const word = dynamicHeadlines[currentWordIndex];
+    let timeout;
 
-  const heroVariants = {
-    hidden: { opacity: 0, y: 30 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.9, staggerChildren: 0.15 }
+    if (!isDeleting && currentText === word) {
+      timeout = setTimeout(() => setIsDeleting(true), 2000);
+    } else if (isDeleting && currentText === '') {
+      setIsDeleting(false);
+      setCurrentWordIndex((prev) => (prev + 1) % dynamicHeadlines.length);
+    } else {
+      const speed = isDeleting ? 30 : 60;
+      timeout = setTimeout(() => {
+        setCurrentText(
+          isDeleting
+            ? word.substring(0, currentText.length - 1)
+            : word.substring(0, currentText.length + 1)
+        );
+      }, speed);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [currentText, isDeleting, currentWordIndex]);
+
+  const scrollTo = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY - 70;
+      window.scrollTo({ top, behavior: 'smooth' });
     }
   };
 
   return (
-    <SectionWrapper id="hero" className="min-h-screen relative flex items-center justify-center overflow-hidden">
-      {/* 3D Background */}
-      <div className="absolute inset-0 z-0">
-        <Canvas>
-          <ParticleField />
-        </Canvas>
-      </div>
+    <section id="hero" className="relative min-h-[92vh] pt-32 pb-16 lg:pt-36 lg:pb-24 flex items-center overflow-hidden transition-colors duration-300 bg-transparent">
+      
+      {/* Ambient Radial Lights */}
+      <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[450px] pointer-events-none blur-3xl ${
+        isDark 
+          ? 'bg-gradient-to-b from-[#00ff66]/[0.08] via-transparent to-transparent' 
+          : 'bg-gradient-to-b from-blue-400/[0.08] via-transparent to-transparent'
+      }`} />
+      <div className={`absolute top-1/4 right-0 w-96 h-96 rounded-full pointer-events-none blur-3xl ${
+        isDark ? 'bg-[#00f0ff]/[0.06]' : 'bg-indigo-300/[0.08]'
+      }`} />
 
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        {/* Floating particles */}
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-cyber-cyan rounded-full opacity-60 animate-float">
-          <div className="absolute inset-0 bg-cyber-cyan rounded-full animate-ping"></div>
-        </div>
-        <div className="absolute top-1/3 right-1/4 w-3 h-3 bg-neon-pink rounded-full opacity-40 animate-float" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute bottom-1/4 left-1/3 w-1 h-1 bg-cyber-cyan rounded-full opacity-50 animate-float" style={{ animationDelay: '2s' }}></div>
-        
-        {/* Animated grid lines */}
-        <div className="absolute inset-0 cyber-grid opacity-10">
-          <motion.div 
-            className="absolute top-0 left-0 w-full h-0.5 bg-cyber-cyan"
-            animate={{ x: [-100, 100] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-          />
-        </div>
-      </div>
-
-      {/* Ambient glowing orbs */}
-      <motion.div
-        className="absolute top-24 right-10 w-44 h-44 rounded-full bg-cyber-cyan/10 blur-3xl z-0"
-        animate={{ x: [0, 20, 0], y: [0, -16, 0], opacity: [0.2, 0.5, 0.2] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute bottom-24 left-10 w-56 h-56 rounded-full bg-neon-pink/10 blur-3xl z-0"
-        animate={{ x: [0, -16, 0], y: [0, 18, 0], opacity: [0.15, 0.4, 0.15] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-      />
-
-      {/* Content */}
-      <div className="relative z-10 text-center container mx-auto px-4">
-        <motion.div
-          variants={heroVariants}
-          initial="hidden"
-          animate="show"
-          className="space-y-6"
-        >
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          
+          {/* Left Column: Cyber Masthead (7 cols) */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-7 space-y-6"
           >
-            <h2 className="text-xl md:text-2xl text-cyber-cyan font-mono mb-4 tracking-wider">
-              Hello, I'm
-            </h2>
-          </motion.div>
-
-          <div className="relative">
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-cyber font-black mb-4 min-h-[1.2em] tracking-tight">
-              <span className="text-gradient-cyber relative">
-                {displayedName}
-                {/* Typing cursor */}
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: [0, 1, 0] }}
-                  transition={{ duration: 0.8, repeat: Infinity, delay: 0.5 }}
-                  className="ml-1"
-                >
-                  |
-                </motion.span>
+            {/* Main Dynamic Headline */}
+            <h1 className={`text-3xl sm:text-4xl lg:text-5xl font-black font-mono tracking-tight leading-tight ${
+              isDark ? 'text-white' : 'text-slate-900'
+            }`}>
+              <span className="block">
+                Engineering Digital Experiences.
+              </span>
+              <span className="block mt-2 min-h-[1.3em]">
+                <span className={`text-transparent bg-clip-text ${
+                  isDark
+                    ? 'bg-gradient-to-r from-[#00ff66] via-[#00f0ff] to-white'
+                    : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600'
+                }`}>
+                  {currentText}
+                </span>
+                <span className={`inline-block w-2.5 h-7 ml-1 animate-pulse align-middle ${
+                  isDark ? 'bg-[#00ff66]' : 'bg-blue-600'
+                }`} />
               </span>
             </h1>
-            
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: '100%' }}
-              transition={{ delay: 2, duration: 1, ease: "easeOut" }}
-              className="h-1 bg-gradient-to-r from-cyber-cyan to-neon-pink mx-auto mt-4 rounded-full"
-            />
-          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2 }}
-          >
-            <AnimatedText
-              text="Software Engineer • Full-Stack Developer"
-              className="text-xl md:text-2xl text-gray-300 font-light mb-8 tracking-wide"
-            />
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5, duration: 0.8 }}
-            className="max-w-3xl mx-auto"
-          >
-            <p className="text-lg md:text-xl text-gray-300 leading-relaxed rounded-2xl p-6 transition-all duration-500 text-balance">
-              I transform ideas into production-ready applications.
-              From concept to deployment, I build complete digital solutions
-              that solve real problems and deliver exceptional user experiences.
+            {/* Technical Narrative */}
+            <p className={`text-sm sm:text-base font-mono leading-relaxed border-l-2 pl-4 py-2.5 rounded-r-lg ${
+              isDark 
+                ? 'text-zinc-300 border-[#00ff66]/40 bg-[#0a101d]/60' 
+                : 'text-slate-700 border-blue-500 bg-blue-50/50'
+            }`}>
+              Full-Stack Developer and Enterprise Systems Engineer. I architect modular multi-tenant ERP platforms, automated business workflows, and high-performance React/Next.js web applications with robust database backends.
             </p>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2, duration: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12"
-          >
-            <motion.button
-              whileHover={{ 
-                scale: 1.05,
-                boxShadow: "0 0 30px rgba(0, 245, 255, 0.4)"
-              }}
-              whileTap={{ scale: 0.95 }}
-              onClick={scrollToProjects}
-              className="btn-cyber text-lg px-8 py-4 relative overflow-hidden group"
-            >
-              <span className="relative z-10">View My Work</span>
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-cyber-cyan to-neon-pink opacity-0 group-hover:opacity-100"
-                initial={false}
-                transition={{ duration: 0.3 }}
-              />
-            </motion.button>
-            
-            <motion.a
-              href="#contact"
-              whileHover={{ 
-                scale: 1.05,
-                boxShadow: "0 0 20px rgba(255, 0, 245, 0.3)"
-              }}
-              whileTap={{ scale: 0.95 }}
-              className="btn-cyber-outline text-lg px-8 py-4 relative overflow-hidden group"
-            >
-              <span className="relative z-10">Get In Touch</span>
-              <motion.div
-                className="absolute inset-0 bg-cyber-cyan/10 opacity-0 group-hover:opacity-100"
-                initial={false}
-                transition={{ duration: 0.3 }}
-              />
-            </motion.a>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2.2, duration: 0.6 }}
-            className="flex flex-wrap justify-center gap-3 pt-2"
-          >
-            {['Open to Work', 'Remote Friendly', 'Fast Delivery'].map((badge, index) => (
-              <motion.span
-                key={badge}
-                className="px-4 py-2 rounded-full border border-cyber-cyan/30 text-sm text-cyber-cyan glass"
-                animate={{ y: [0, -4, 0] }}
-                transition={{ duration: 2 + index * 0.3, repeat: Infinity, ease: "easeInOut" }}
+            {/* CTAs and Verified Socials */}
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <button
+                onClick={() => scrollTo('projects')}
+                className="btn-cyber-primary"
               >
-                {badge}
-              </motion.span>
-            ))}
+                <span>EXPLORE MY WORK</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+
+              <a
+                href={resumeConfig.url}
+                download={resumeConfig.filename}
+                className="btn-cyber-secondary flex items-center gap-2"
+              >
+                <span>DOWNLOAD CV</span>
+                <Download className="w-4 h-4" />
+              </a>
+
+              {/* Icon Links */}
+              <div className={`flex items-center gap-2 pl-2 border-l ${
+                isDark ? 'border-[#1b253b]' : 'border-slate-300'
+              }`}>
+                <a
+                  href="https://github.com/xobiya"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`p-2.5 rounded-xl border transition-all ${
+                    isDark 
+                      ? 'border-[#1b253b] bg-[#070b14] text-zinc-300 hover:text-[#00ff66] hover:border-[#00ff66]' 
+                      : 'border-slate-300 bg-white text-slate-700 hover:text-blue-600 hover:border-blue-400 shadow-sm'
+                  }`}
+                  aria-label="GitHub Profile"
+                  title="GitHub Profile"
+                >
+                  <Github className="w-4 h-4" />
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/feleke-eshetu-a6b4a0371"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`p-2.5 rounded-xl border transition-all ${
+                    isDark 
+                      ? 'border-[#1b253b] bg-[#070b14] text-zinc-300 hover:text-[#00f0ff] hover:border-[#00f0ff]' 
+                      : 'border-slate-300 bg-white text-slate-700 hover:text-blue-600 hover:border-blue-400 shadow-sm'
+                  }`}
+                  aria-label="LinkedIn Profile"
+                  title="LinkedIn Profile"
+                >
+                  <Linkedin className="w-4 h-4" />
+                </a>
+                <a
+                  href="https://t.me/xobiya"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`p-2.5 rounded-xl border transition-all ${
+                    isDark 
+                      ? 'border-[#1b253b] bg-[#070b14] text-zinc-300 hover:text-[#00f0ff] hover:border-[#00f0ff]' 
+                      : 'border-slate-300 bg-white text-slate-700 hover:text-blue-600 hover:border-blue-400 shadow-sm'
+                  }`}
+                  aria-label="Telegram"
+                  title="Telegram"
+                >
+                  <Telegram className="w-4 h-4" />
+                </a>
+                <a
+                  href="mailto:eshetufeleke21@gmail.com"
+                  className={`p-2.5 rounded-xl border transition-all ${
+                    isDark 
+                      ? 'border-[#1b253b] bg-[#070b14] text-zinc-300 hover:text-[#00ff66] hover:border-[#00ff66]' 
+                      : 'border-slate-300 bg-white text-slate-700 hover:text-blue-600 hover:border-blue-400 shadow-sm'
+                  }`}
+                  aria-label="Email"
+                  title="Direct Email"
+                >
+                  <Mail className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+
           </motion.div>
 
-        </motion.div>
-      </div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 3 }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-      >
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="text-center cursor-pointer"
-          onClick={scrollToProjects}
-        >
-          <div className="w-6 h-10 border-2 border-cyber-cyan rounded-full flex justify-center mb-2 group hover:border-neon-pink transition-colors">
-            <motion.div
-              className="w-1 h-3 bg-cyber-cyan rounded-full mt-2 group-hover:bg-neon-pink transition-colors"
-              animate={{ y: [0, 12, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </div>
-          <motion.span 
-            className="text-cyber-cyan text-sm font-mono group-hover:text-neon-pink transition-colors"
-            whileHover={{ scale: 1.1 }}
+          {/* Right Column: Feleke's Desk Photo in First Form Cyber Window (5 cols) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="lg:col-span-5 w-full flex justify-center"
           >
-            Scroll to Explore
-          </motion.span>
-        </motion.div>
-      </motion.div>
-    </SectionWrapper>
+            <div className={`terminal-window w-full max-w-md relative group overflow-hidden border ${
+              isDark 
+                ? 'border-[#1b2b48] shadow-[0_0_50px_rgba(0,240,255,0.15)] bg-[#070c18]' 
+                : 'border-slate-200 shadow-2xl bg-white'
+            }`}>
+              {/* Chrome Header */}
+              <div className={`px-4 py-2.5 flex items-center justify-between text-xs font-mono border-b ${
+                isDark ? 'bg-[#0a1020] border-[#1b2b48]' : 'bg-slate-100 border-slate-200'
+              }`}>
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+                  <span className={`text-[11px] ml-1 ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
+                    identity://feleke.dev
+                  </span>
+                </div>
+              </div>
+
+              {/* Desk Photo Frame */}
+              <div className="relative aspect-[3/4] overflow-hidden bg-slate-950">
+                <img
+                  src={felekeDeskPhoto}
+                  alt="Feleke Eshetu — Software Developer"
+                  className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
+                  priority="true"
+                />
+
+                {/* Corner Crosshairs */}
+                <div className="absolute top-3 left-3 text-[#00f0ff]/80 font-mono text-xs pointer-events-none">+</div>
+                <div className="absolute top-3 right-3 text-[#00ff66]/80 font-mono text-xs pointer-events-none">+</div>
+                <div className="absolute bottom-3 left-3 text-[#00ff66]/80 font-mono text-xs pointer-events-none">+</div>
+                <div className="absolute bottom-3 right-3 text-[#00f0ff]/80 font-mono text-xs pointer-events-none">+</div>
+
+                {/* Bottom Metadata Strip */}
+                <div className="absolute inset-x-0 bottom-0 p-3.5 bg-gradient-to-t from-black via-black/85 to-transparent flex items-center justify-between font-mono text-xs">
+                  <div>
+                    <span className="text-white font-bold block">FELEKE ESHETU</span>
+                    <span className="text-cyan-400 text-[10px]">SOFTWARE DEVELOPER</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+        </div>
+      </div>
+    </section>
   );
 }

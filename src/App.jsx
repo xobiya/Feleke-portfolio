@@ -1,114 +1,117 @@
-import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
-import { AnimatePresence } from 'framer-motion'
-import Layout from './components/ui/Layout'
-import LoadingScreen from './components/ui/LoadingScreen'
-import Hero from './components/sections/Hero'
-import About from './components/sections/About'
-import Projects from './components/sections/Projects'
-import Skills from './components/sections/Skills'
-import Contact from './components/sections/Contact'
-import './styles/globals.css'
+import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import { LanguageProvider } from './context/LanguageContext';
+import { ThemeProvider } from './context/ThemeContext';
+import Layout from './components/ui/Layout';
+import LoadingScreen from './components/ui/LoadingScreen';
+import Hero from './components/sections/Hero';
+import About from './components/sections/About';
+import Skills from './components/sections/Skills';
+import Enterprise from './components/sections/Enterprise';
+import Projects from './components/sections/Projects';
+import Process from './components/sections/Process';
+import Experience from './components/sections/Experience';
+import Contact from './components/sections/Contact';
+import './styles/globals.css';
 
-// Router-aware component for page transitions
-function AnimatedRoutes() {
-  const location = useLocation()
+function MainPortfolio() {
+  const location = useLocation();
+
   useEffect(() => {
-    // If navigation provided a scroll target (via navigate('/', { state: { scrollTo } }))
-    // perform a smooth scroll to that element when on the home path.
-    if (location.pathname === '/' && location.state && location.state.scrollTo) {
+    if (location.state && location.state.scrollTo) {
       const anchorId = location.state.scrollTo;
-      // small delay to ensure elements are mounted
       setTimeout(() => {
         const el = document.getElementById(anchorId);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 120);
+        if (el) {
+          const top = el.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      }, 100);
     }
-  }, [location])
-  
+  }, [location]);
+
+  return (
+    <>
+      <Hero />
+      <About />
+      <Skills />
+      <Enterprise />
+      <Projects />
+      <Process />
+      <Experience />
+      <Contact />
+    </>
+  );
+}
+
+function AnimatedRoutes() {
+  const location = useLocation();
+
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={
-          <>
-            <Hero />
-            <About />
-            <Projects />
-            <Skills />
-            <Contact />
-          </>
-        } />
-        <Route path="/projects" element={
-          <>
-            <Projects featuredOnly={false} />
-          </>
-        } />
-        <Route path="/skills" element={
-          <>
-            <Skills />
-          </>
-        } />
-        <Route path="/skill" element={
-          <>
-            <Skills />
-          </>
-        } />
-        <Route path="/about" element={
-          <>
-            <About expanded={true} />
-          </>
-        } />
-        <Route path="/contact" element={
-          <>
-            <Contact />
-          </>
-        } />
+        <Route path="/" element={<MainPortfolio />} />
+        <Route
+          path="/projects"
+          element={
+            <div className="pt-20">
+              <Projects featuredOnly={false} />
+            </div>
+          }
+        />
+        <Route
+          path="/skills"
+          element={
+            <div className="pt-20">
+              <Skills />
+            </div>
+          }
+        />
+        <Route
+          path="/enterprise"
+          element={
+            <div className="pt-20">
+              <Enterprise />
+            </div>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <div className="pt-20">
+              <About />
+            </div>
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            <div className="pt-20">
+              <Contact />
+            </div>
+          }
+        />
       </Routes>
     </AnimatePresence>
-  )
+  );
 }
 
-function App() {
-  const [isLoading, setIsLoading] = useState(true)
-  const [startAnimation, setStartAnimation] = useState(false)
-
-  // Simulate loading assets
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-      // Small delay before starting animations for better UX
-      setTimeout(() => setStartAnimation(true), 500)
-    }, 3000)
-
-    return () => clearTimeout(timer)
-  }, [])
-
-  // Handle prevent right-click in production (optional)
-  useEffect(() => {
-    const handleContextMenu = (e) => {
-      // Use Vite's import.meta.env.MODE to detect production at runtime in the browser
-      if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.MODE === 'production') {
-        e.preventDefault()
-      }
-    }
-
-    document.addEventListener('contextmenu', handleContextMenu)
-    return () => document.removeEventListener('contextmenu', handleContextMenu)
-  }, [])
-
-  if (isLoading) {
-    return <LoadingScreen onLoadingComplete={() => setIsLoading(false)} />
-  }
+export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <div className={`App ${startAnimation ? 'loaded' : ''}`}>
-      <Router>
-        <Layout>
-          <AnimatedRoutes />
-        </Layout>
-      </Router>
-    </div>
-  )
+    <ThemeProvider>
+      <LanguageProvider>
+        {isLoading && (
+          <LoadingScreen onLoadingComplete={() => setIsLoading(false)} />
+        )}
+        <Router>
+          <Layout>
+            <AnimatedRoutes />
+          </Layout>
+        </Router>
+      </LanguageProvider>
+    </ThemeProvider>
+  );
 }
-
-export default App
