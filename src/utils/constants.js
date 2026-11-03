@@ -7,23 +7,28 @@ export const BREAKPOINTS = {
 };
 
 export const COLORS = {
-  cyberCyan: '#00F5FF',
-  neonPink: '#FF00F5',
-  darkSpace: '#0A0A0A',
-  stellarGray: '#1A1A1A',
-  cosmicWhite: '#FFFFFF'
+  canvas: '#050507',
+  surface: '#0d0f17',
+  card: '#11131c',
+  border: '#1f2333',
+  brandBlue: '#3b82f6',
+  brandElectric: '#60a5fa',
+  textPrimary: '#fafafa',
+  textSecondary: '#94a3b8'
 };
 
 export const SOCIAL_LINKS = {
-  github: 'https://github.com/yourusername',
-  linkedin: 'https://linkedin.com/in/yourusername',
-  twitter: 'https://twitter.com/yourusername',
-  email: 'mailto:hello@nexus.dev'
+  github: 'https://github.com/xobiya',
+  linkedin: 'https://www.linkedin.com/in/feleke-eshetu-a6b4a0371',
+  email: 'mailto:eshetufeleke21@gmail.com',
+  telegram: 'https://t.me/xobiya'
 };
 
 export const NAV_ITEMS = [
-  { name: 'Home', path: '/', icon: '🏠' },
-  { name: 'About', path: '/about', icon: '👨‍💻' },
-  { name: 'Projects', path: '/projects', icon: '🚀' },
-  { name: 'Contact', path: '/contact', icon: '📧' }
+  { name: 'Home', path: '/', id: 'hero' },
+  { name: 'About', path: '/about', id: 'about' },
+  { name: 'Expertise', path: '/skills', id: 'expertise' },
+  { name: 'Enterprise', path: '/enterprise', id: 'enterprise' },
+  { name: 'Projects', path: '/projects', id: 'projects' },
+  { name: 'Contact', path: '/contact', id: 'contact' }
 ];

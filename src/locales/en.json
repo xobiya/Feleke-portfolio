@@ -1,0 +1,122 @@
+{
+  "nav": {
+    "brand": "FELEKE ESHETU",
+    "role": "Systems & Full-Stack Engineer",
+    "home": "Home",
+    "about": "About",
+    "expertise": "Expertise",
+    "systems": "Enterprise ERP",
+    "projects": "Projects",
+    "process": "Process",
+    "experience": "Experience",
+    "contact": "Contact",
+    "resume": "Resume",
+    "available": "Available for Projects"
+  },
+  "hero": {
+    "badge": "Available for high-impact projects & enterprise engineering",
+    "greeting": "Hello, I'm Feleke Eshetu.",
+    "headlinePrefix": "Engineering Digital Experiences.",
+    "headlineHighlight": "Building Systems That Power Businesses.",
+    "description": "Full-Stack Developer and Enterprise Systems Engineer specializing in high-throughput web applications, multi-tenant ERP platforms, and automated business operations with modern React, Node.js, and robust relational architectures.",
+    "primaryCta": "Explore My Work",
+    "secondaryCta": "Let's Discuss Your Project",
+    "githubAria": "View GitHub Profile",
+    "linkedinAria": "View LinkedIn Profile",
+    "stats": [
+      { "value": "100%", "label": "Enterprise Reliability" },
+      { "value": "Multi-Tenant", "label": "Architecture Ready" },
+      { "value": "End-to-End", "label": "Full Lifecycle Engineering" }
+    ],
+    "floatingTech": ["Next.js", "NestJS", "Laravel", "React", "PostgreSQL"]
+  },
+  "about": {
+    "eyebrow": "The Engineer Behind The Code",
+    "title": "Bridging Creative Frontend Engineering with Enterprise-Grade Reliability",
+    "p1": "I am a Full-Stack Developer with an engineering mindset grounded at Arba Minch University. I treat software not merely as visual interfaces, but as resilient business engines that power day-to-day operations.",
+    "p2": "My core expertise spans building scalable single-page and server-rendered web applications, architecting multi-tenant relational databases (PostgreSQL & MySQL), and crafting enterprise workflows—from biometric attendance integrations to granular role-based access control.",
+    "p3": "Whether designing high-converting customer experiences or engineering mission-critical ERP backends, I emphasize clean architecture, deterministic state management, rigorous type safety, and real business value.",
+    "educationTitle": "Education & Foundation",
+    "educationDegree": "B.Sc. in Software Engineering",
+    "educationSchool": "Arba Minch University",
+    "educationDesc": "Comprehensive training in software design patterns, distributed algorithms, relational database normalization, and systems engineering principles.",
+    "philosophyTitle": "Core Engineering Principles",
+    "principles": [
+      {
+        "title": "Systems Thinking",
+        "desc": "Every UI component is connected to a business process, data flow, and audit trail."
+      },
+      {
+        "title": "Zero-Compromise Security",
+        "desc": "Role-based access, token encryption, and multi-tenant isolation from day zero."
+      },
+      {
+        "title": "Speed & Ergonomics",
+        "desc": "Sub-second database queries, optimized asset delivery, and intuitive operator UX."
+      }
+    ]
+  },
+  "expertise": {
+    "eyebrow": "Technical Architecture",
+    "title": "Multi-Disciplinary Technical Expertise",
+    "subtitle": "A proven technological toolkit refined across real-world commercial platforms and enterprise backends.",
+    "categories": {
+      "all": "All Capabilities",
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "databases": "Databases & Architecture",
+      "devops": "DevOps & Infrastructure",
+      "enterprise": "Enterprise Systems"
+    }
+  },
+  "enterprise": {
+    "eyebrow": "Mission-Critical Capabilities",
+    "title": "Beyond Websites. I Build Business Systems.",
+    "subtitle": "Modern companies require integrated digital infrastructure. I engineer modular, auditable, and automated business management platforms that eradicate paper chaos and spreadsheet bottlenecks.",
+    "architectureCta": "View Architectural Modules",
+    "tagline": "Cohesive data exchange across human resources, operations, and financial auditing."
+  },
+  "projects": {
+    "eyebrow": "Selected Portfolio Work",
+    "title": "Production Systems & Web Applications",
+    "subtitle": "Each solution engineered to solve concrete real-world operational friction, scale seamlessly, and deliver exceptional user experiences.",
+    "allFilter": "All Systems",
+    "erpFilter": "ERP & Enterprise",
+    "fullstackFilter": "Full-Stack SaaS",
+    "frontendFilter": "Frontend Apps",
+    "viewCode": "Source Code",
+    "liveDemo": "Live System",
+    "keyFeatures": "Core Capabilities"
+  },
+  "process": {
+    "eyebrow": "Methodology",
+    "title": "From Concept to Production",
+    "subtitle": "A disciplined, engineering-first approach that ensures predictability, performance, and long-term maintainability."
+  },
+  "experience": {
+    "eyebrow": "Journey & Education",
+    "title": "Professional Experience & Academic Credentials",
+    "subtitle": "Real-world engineering delivery paired with deep computer science fundamentals."
+  },
+  "contact": {
+    "eyebrow": "Start A Conversation",
+    "title": "Have a Project in Mind? Let's Build Something Meaningful.",
+    "subtitle": "Whether you need a custom enterprise ERP system, a high-converting web platform, or full-stack architectural consulting, I am here to build it.",
+    "nameLabel": "Your Name",
+    "namePlaceholder": "e.g. Dawit Kebede",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "dawit@company.com",
+    "projectTypeLabel": "Project Domain",
+    "messageLabel": "Project Details & Objectives",
+    "messagePlaceholder": "Describe the business challenge, required modules, or platform goals...",
+    "submitBtn": "Send Project Inquiry",
+    "sendingBtn": "Submitting Inquiry...",
+    "directReachout": "Direct Contact Channels",
+    "responseTime": "Typical response time: under 24 hours"
+  },
+  "footer": {
+    "tagline": "Engineering digital platforms and enterprise systems that scale.",
+    "rights": "All rights reserved.",
+    "builtWith": "Designed & Engineered with React, Three.js & Tailwind CSS."
+  }
+}
