@@ -34,7 +34,7 @@
     "eyebrow": "The Engineer Behind The Code",
     "title": "Bridging Creative Frontend Engineering with Enterprise-Grade Reliability",
     "p1": "I am a Full-Stack Developer with an engineering mindset grounded at Arba Minch University. I treat software not merely as visual interfaces, but as resilient business engines that power day-to-day operations.",
-    "p2": "My core expertise spans building scalable single-page and server-rendered web applications, architecting multi-tenant relational databases (PostgreSQL & MySQL), and crafting enterprise workflows—from biometric attendance integrations to granular role-based access control.",
+    "p2": "My core expertise spans building scalable single-page and server-rendered web applications, architecting multi-tenant relational databases (PostgreSQL & MySQL), and crafting enterprise workflows—from multi-tenant business operations to granular role-based access control.",
     "p3": "Whether designing high-converting customer experiences or engineering mission-critical ERP backends, I emphasize clean architecture, deterministic state management, rigorous type safety, and real business value.",
     "educationTitle": "Education & Foundation",
     "educationDegree": "B.Sc. in Software Engineering",

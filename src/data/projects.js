@@ -1,65 +1,39 @@
 import Tool from '../Assets/ToolShare.png';
-import Travel from '../Assets/OggeTravel.png';
+import Travel from '../Assets/OggeTravel.jpg';
 import SubTrack from '../Assets/Subscription.png';
 import Nike from '../Assets/Nike.png';
 import Ecommerce from '../Assets/E-commerce.png';
 import KidameGebiyaImg from '../Assets/Kidamegebiya.png';
 import ArifCarSellImg from '../Assets/ArifCarSell.jpg';
+import XobiyaErpImg from '../Assets/XobiyaERP.jpg';
 
 export const projectsData = [
   {
-    id: 'tewos-erp',
-    title: 'TewosERP — Integrated Business Platform',
-    shortTitle: 'TewosERP',
-    subtitle: 'Enterprise Resource Planning & Operations Suite',
+    id: 'xobiya-erp',
+    title: 'Xobiya ERP — Integrated Business Platform',
+    shortTitle: 'Xobiya ERP',
+    subtitle: 'Enterprise Resource Planning & Business Suite (Laravel)',
     category: 'ERP & Enterprise',
     featured: true,
     accentColor: '#3b82f6',
     problem:
       'Disconnected spreadsheets and separate tools cause attendance inaccuracies, inventory blindspots, and slow branch communication.',
     solution:
-      'Engineered a synchronized multi-tenant platform unifying HR, biometric attendance, inventory transfers, and role-based access.',
+      'Engineered an enterprise multi-tenant ERP platform in Laravel and PostgreSQL, unifying HR operations, attendance, warehouse inventory, and role-based access.',
     features: [
-      'Multi-tenant architecture with strict tenant data isolation',
+      'Laravel multi-tenant architecture with strict tenant schema isolation',
       'Integrated HR management and automated employee directory',
       'Warehouse inventory control, stock transfers, and low-level alerts',
       'Granular Role-Based Access Control (RBAC) with operational audit trails'
     ],
-    tags: ['Next.js', 'NestJS', 'PostgreSQL', 'Prisma ORM', 'Docker', 'Tailwind CSS'],
+    tags: ['Laravel', 'PHP', 'PostgreSQL', 'Livewire', 'Docker', 'Tailwind CSS'],
     metric: '6 Core Modules Unified',
     status: 'Enterprise Production',
     githubUrl: 'https://github.com/xobiya',
     liveUrl: '#',
-    image: null,
-    isMockup: true,
+    image: XobiyaErpImg,
+    isMockup: false,
     mockupType: 'erp'
-  },
-  {
-    id: 'biometric-attendance',
-    title: 'Biometric Attendance & Workforce System',
-    shortTitle: 'Biometric Attendance',
-    subtitle: 'Hardware-Integrated Real-Time Workforce Tracking',
-    category: 'ERP & Enterprise',
-    featured: true,
-    accentColor: '#06b6d4',
-    problem:
-      'Manual attendance sheets lead to time fraud, buddy-punching, and tedious manual Excel reconciliation at month-end payroll.',
-    solution:
-      'Engineered an automated ingestion pipeline connecting biometric hardware devices directly with centralized shift schedules and punch logs.',
-    features: [
-      'Real-time biometric device synchronization and punch event ingestion',
-      'Automated shift rules, grace periods, penalty deduction, and overtime',
-      'Automated leave balance deduction with one-click audit report export',
-      'Device heartbeat monitor with instant failure alerts'
-    ],
-    tags: ['React', 'Node.js', 'Express', 'PostgreSQL', 'WebSockets', 'Tailwind CSS'],
-    metric: 'Zero Manual Reconciliation',
-    status: 'Operational System',
-    githubUrl: 'https://github.com/xobiya',
-    liveUrl: '#',
-    image: null,
-    isMockup: true,
-    mockupType: 'attendance'
   },
   {
     id: 'kidame-gebiya',

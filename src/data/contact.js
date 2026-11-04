@@ -40,7 +40,7 @@ export const projectTypes = [
   'ERP & Enterprise Business System',
   'Multi-Tenant SaaS Platform',
   'Full-Stack Web Application',
-  'Biometric / Hardware-Integrated System',
+  'Business Automation & Operations System',
   'E-Commerce & Payment Integration',
   'Database & API Architecture Consulting',
   'Other Custom Project'

@@ -34,7 +34,7 @@ export const developmentProcess = [
     phase: "Database & Backend Development",
     title: "Constructing Resilient APIs & Business Logic",
     tagline: "Fast, transactional, and type-safe server backends.",
-    description: "Implementing core services with Node.js/NestJS/Laravel and relational databases. Writing ACID-compliant transactions, indexing performance-critical tables, integrating hardware communication (e.g. biometric sockets), and strictly validating input payloads.",
+    description: "Implementing core services with Node.js/NestJS/Laravel and relational databases. Writing ACID-compliant transactions, indexing performance-critical tables, integrating external services and real-time sockets, and strictly validating input payloads.",
     deliverables: [
       "Performant database schema & migrations",
       "Secure authentication & JWT token rotation",
@@ -64,7 +64,7 @@ export const developmentProcess = [
     phase: "Integration & Testing",
     title: "Verification, Hardware Sync & Edge Cases",
     tagline: "Eliminating defects before real users touch the system.",
-    description: "Connecting the frontend to backend endpoints, verifying third-party payment gateways (e.g., local payment processors), testing real hardware sync (biometric readers), and subjecting the database to stress queries and permission boundary checks.",
+    description: "Connecting the frontend to backend endpoints, verifying third-party payment gateways (e.g., local payment processors), testing real-time socket streams, and subjecting the database to stress queries and permission boundary checks.",
     deliverables: [
       "End-to-end user journey validation",
       "Role-based permission leak prevention",
