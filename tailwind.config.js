@@ -30,9 +30,14 @@ export default {
         'scanline': 'scanline 8s linear infinite',
         'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
         'blink': 'blink 1s step-start infinite',
-        'matrix-drift': 'matrixDrift 20s linear infinite'
+        'matrix-drift': 'matrixDrift 20s linear infinite',
+        'shimmer': 'shimmer 2s infinite'
       },
       keyframes: {
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' }
+        },
         scanline: {
           '0%': { transform: 'translateY(-100%)' },
           '100%': { transform: 'translateY(1000%)' }

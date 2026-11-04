@@ -1,12 +1,15 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
 import { Building, ShieldCheck, Cpu, Code2 } from '../shared/Icons';
 import felekePhoto from '../../Assets/feleke.jpg';
+import { Skeleton } from '../ui/skeleton';
 
 export default function About() {
   const { t } = useLanguage();
   const { isDark } = useTheme();
+  const [photoLoaded, setPhotoLoaded] = useState(false);
 
   const principles = [
     {
@@ -77,10 +80,16 @@ export default function About() {
 
               {/* Photo Display Frame */}
               <div className="relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5] overflow-hidden bg-zinc-950">
+                {!photoLoaded && (
+                  <Skeleton className="absolute inset-0 bg-[#0d162a] z-10" />
+                )}
                 <img
                   src={felekePhoto}
                   alt="Feleke Eshetu — Full-Stack Developer"
-                  className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
+                  onLoad={() => setPhotoLoaded(true)}
+                  className={`w-full h-full object-cover object-top group-hover:scale-[1.02] transition-all duration-500 ${
+                    photoLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                  }`}
                   loading="lazy"
                   decoding="async"
                 />

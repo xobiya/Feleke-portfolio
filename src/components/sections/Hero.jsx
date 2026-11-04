@@ -11,9 +11,11 @@ import {
 } from '../shared/Icons';
 import { resumeConfig } from '../../data/navigation';
 import felekeDeskPhoto from '../../Assets/feleke.jpg';
+import { Skeleton } from '../ui/skeleton';
 
 export default function Hero() {
   const { isDark } = useTheme();
+  const [photoLoaded, setPhotoLoaded] = useState(false);
 
   // Dynamic Typewriter Effect for the Headline
   const dynamicHeadlines = [
@@ -221,10 +223,16 @@ export default function Hero() {
 
               {/* Desk Photo Frame */}
               <div className="relative aspect-[3/4] overflow-hidden bg-slate-950">
+                {!photoLoaded && (
+                  <Skeleton className="absolute inset-0 bg-[#0d162a] z-10" />
+                )}
                 <img
                   src={felekeDeskPhoto}
                   alt="Feleke Eshetu — Software Developer"
-                  className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
+                  onLoad={() => setPhotoLoaded(true)}
+                  className={`w-full h-full object-cover object-top group-hover:scale-[1.02] transition-all duration-500 ${
+                    photoLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                  }`}
                   fetchPriority="high"
                   decoding="async"
                 />

@@ -10,6 +10,7 @@ import {
   ChevronRight,
   Server
 } from '../shared/Icons';
+import { ModernCardSkeleton } from '../ui/ModernLoader';
 
 function ProjectCardMedia({ project, renderCompactMockup, isDark }) {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -21,14 +22,9 @@ function ProjectCardMedia({ project, renderCompactMockup, isDark }) {
 
   return (
     <div className="relative w-full h-full overflow-hidden bg-[#040813]">
-      {/* Animated Skeleton Shimmer Placeholder */}
+      {/* Modern Shadcn Animated Skeleton State */}
       {!isLoaded && (
-        <div className="absolute inset-0 bg-[#080e1c] flex items-center justify-center animate-pulse z-10">
-          <div className="flex flex-col items-center gap-1.5">
-            <div className="w-5 h-5 border-2 border-[#00f0ff]/30 border-t-[#00f0ff] rounded-full animate-spin" />
-            <span className="text-[9px] font-mono text-zinc-500">LOADING UI...</span>
-          </div>
-        </div>
+        <ModernCardSkeleton className="absolute inset-0 z-10" />
       )}
 
       {/* Main Image with Async Eager Decoding and Smooth Fade-In */}
