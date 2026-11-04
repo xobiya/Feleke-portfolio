@@ -10,25 +10,25 @@ import XobiyaErpImg from '../Assets/XobiyaERP.jpg';
 export const projectsData = [
   {
     id: 'xobiya-erp',
-    title: 'Xobiya ERP — Integrated Business Platform',
+    title: 'Xobiya ERP — POS & Integrated Enterprise Platform',
     shortTitle: 'Xobiya ERP',
-    subtitle: 'Enterprise Resource Planning & Business Suite (Laravel)',
+    subtitle: 'Point of Sale, Operations & Accounting Suite (Laravel)',
     category: 'ERP & Enterprise',
     featured: true,
     accentColor: '#3b82f6',
     problem:
-      'Disconnected spreadsheets and separate tools cause attendance inaccuracies, inventory blindspots, and slow branch communication.',
+      'Retail and multi-branch enterprises struggle to reconcile real-time POS checkouts, inventory purchases, customer CRM accounts, and payroll in a unified ledger.',
     solution:
-      'Engineered an enterprise multi-tenant ERP platform in Laravel and PostgreSQL, unifying HR operations, attendance, warehouse inventory, and role-based access.',
+      'Engineered a unified POS & ERP management platform in Laravel and PostgreSQL, integrating real-time sales analytics, purchase orders, customer CRM, and automated payroll workflows.',
     features: [
-      'Laravel multi-tenant architecture with strict tenant schema isolation',
-      'Integrated HR management and automated employee directory',
-      'Warehouse inventory control, stock transfers, and low-level alerts',
-      'Granular Role-Based Access Control (RBAC) with operational audit trails'
+      'Real-time POS checkout with order stream and transaction ledger',
+      'Comprehensive Sales, Accounting, and Purchase analytics',
+      'Integrated Customers CRM, HR directory, and staff payroll engine',
+      'Multi-branch operational reporting and role-based permissions'
     ],
-    tags: ['Laravel', 'PHP', 'PostgreSQL', 'Livewire', 'Docker', 'Tailwind CSS'],
-    metric: '6 Core Modules Unified',
-    status: 'Enterprise Production',
+    tags: ['Laravel', 'PHP', 'PostgreSQL', 'Livewire', 'Tailwind CSS', 'REST API'],
+    metric: '$45.5k Revenue & 700 Orders',
+    status: 'Production Architecture',
     githubUrl: 'https://github.com/xobiya',
     liveUrl: '#',
     image: XobiyaErpImg,

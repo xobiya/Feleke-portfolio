@@ -179,7 +179,7 @@ export const skillCategories = [
       {
         name: "Attendance Management",
         badge: "Hardware Sync",
-        highlight: "Biometric clock-in streaming, Shift scheduling, Overtime & Penalty algorithms",
+        highlight: "Real-time clock-in streaming, Shift scheduling, Overtime & Penalty algorithms",
         icon: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/clockify.svg"
       },
       {
@@ -217,6 +217,6 @@ export const flatHighlights = [
   "PostgreSQL & MySQL",
   "Docker & CI/CD",
   "Multi-Tenant ERP",
-  "Biometric Hardware Sync",
+  "Automated Workflow Pipelines",
   "Granular RBAC"
 ];
