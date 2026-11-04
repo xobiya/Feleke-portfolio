@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { projectsData } from '../../data/projects';
 import { useLanguage } from '../../context/LanguageContext';
@@ -6,17 +6,60 @@ import { useTheme } from '../../context/ThemeContext';
 import {
   ExternalLink,
   Github,
-  CheckCircle,
-  Building,
-  Clock,
-  Layers,
-  ArrowRight
+  ChevronLeft,
+  ChevronRight,
+  Server
 } from '../shared/Icons';
+
+function ProjectCardMedia({ project, renderCompactMockup, isDark }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  if (!project.image || hasError) {
+    return renderCompactMockup(project.mockupType, project);
+  }
+
+  return (
+    <div className="relative w-full h-full overflow-hidden bg-[#040813]">
+      {/* Animated Skeleton Shimmer Placeholder */}
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-[#080e1c] flex items-center justify-center animate-pulse z-10">
+          <div className="flex flex-col items-center gap-1.5">
+            <div className="w-5 h-5 border-2 border-[#00f0ff]/30 border-t-[#00f0ff] rounded-full animate-spin" />
+            <span className="text-[9px] font-mono text-zinc-500">LOADING UI...</span>
+          </div>
+        </div>
+      )}
+
+      {/* Main Image with Async Eager Decoding and Smooth Fade-In */}
+      <img
+        src={project.image}
+        alt={project.title}
+        decoding="async"
+        loading="eager"
+        onLoad={() => setIsLoaded(true)}
+        onError={() => setHasError(true)}
+        className={`w-full h-full object-cover object-top group-hover:scale-105 transition-all duration-500 ${
+          isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+        }`}
+      />
+
+      {/* Subtle Bottom Ambient Gradient for Text Contrast */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-30 group-hover:opacity-10 transition-opacity pointer-events-none" />
+    </div>
+  );
+}
 
 export default function Projects({ featuredOnly = false }) {
   const { t } = useLanguage();
   const { isDark } = useTheme();
   const [activeFilter, setActiveFilter] = useState('All');
+  const scrollContainerRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   const categories = ['All', 'ERP & Enterprise', 'Full-Stack SaaS', 'Frontend Apps'];
 
@@ -26,374 +69,464 @@ export default function Projects({ featuredOnly = false }) {
     return project.category === activeFilter;
   });
 
-  const renderSimulatedUI = (type, project) => {
+  const checkScroll = () => {
+    if (!scrollContainerRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+    setCanScrollLeft(scrollLeft > 10);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+
+    const maxScroll = scrollWidth - clientWidth;
+    if (maxScroll > 0) {
+      setScrollProgress(Math.min(100, Math.max(0, (scrollLeft / maxScroll) * 100)));
+    }
+
+    const cardWidth = 340 + 20; // approximate card width + gap
+    const index = Math.round(scrollLeft / cardWidth);
+    setActiveIndex(Math.min(index, filteredProjects.length - 1));
+  };
+
+  useEffect(() => {
+    checkScroll();
+    const ref = scrollContainerRef.current;
+    if (ref) {
+      ref.addEventListener('scroll', checkScroll, { passive: true });
+      return () => ref.removeEventListener('scroll', checkScroll);
+    }
+  }, [filteredProjects.length]);
+
+  // Optional gentle auto-drift animation when not hovered
+  useEffect(() => {
+    if (isPaused) return;
+
+    const interval = setInterval(() => {
+      if (!scrollContainerRef.current) return;
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+
+      if (scrollLeft >= scrollWidth - clientWidth - 15) {
+        // Smoothly loop back to start
+        scrollContainerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        scrollContainerRef.current.scrollBy({ left: 340, behavior: 'smooth' });
+      }
+    }, 5500);
+
+    return () => clearInterval(interval);
+  }, [isPaused, filteredProjects.length]);
+
+  const handleScroll = (direction) => {
+    if (!scrollContainerRef.current) return;
+    const cardWidth = 350;
+    const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
+    scrollContainerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  };
+
+  const scrollToCard = (index) => {
+    if (!scrollContainerRef.current) return;
+    const cardWidth = 340 + 20;
+    scrollContainerRef.current.scrollTo({ left: index * cardWidth, behavior: 'smooth' });
+  };
+
+  // Ultra-compact simulated visual preview for Xobiya ERP
+  const renderCompactMockup = (type, project) => {
     switch (type) {
       case 'erp':
         return (
-          <div className="aspect-video p-4 sm:p-5 bg-[#03060f] flex flex-col justify-between font-mono text-xs select-none border border-[#16233b]">
-            <div className="flex items-center justify-between pb-2 border-b border-[#1b2b48]">
-              <div className="flex items-center gap-2">
+          <div className="w-full h-full p-3.5 bg-[#03060f] flex flex-col justify-between font-mono text-[11px] select-none">
+            <div className="flex items-center justify-between pb-1.5 border-b border-[#1b2b48]">
+              <div className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-[#00ff66] animate-pulse" />
-                <span className="text-white font-bold">TEWOS_ERP // MASTER_CONTROL</span>
+                <span className="text-white font-bold text-[10px] tracking-wider">XOBIYA_ERP // POS_CORE</span>
               </div>
-              <span className="text-[10px] text-[#00f0ff] font-mono">[TENANT_ACTIVE: ORG_ALPHA]</span>
+              <span className="text-[9px] text-[#00f0ff]">[LARAVEL_CORE]</span>
             </div>
-
-            <div className="grid grid-cols-3 gap-2 my-1">
-              <div className="p-2 rounded bg-[#080e1c] border border-[#1b2b48]">
-                <div className="text-[10px] text-zinc-400">STAFF_SYNC</div>
-                <div className="text-xs sm:text-sm font-bold text-white">148 ACTIVE</div>
+            <div className="grid grid-cols-3 gap-1.5 my-1">
+              <div className="p-1.5 rounded bg-[#080e1c] border border-[#1b2b48] text-center">
+                <div className="text-[9px] text-zinc-400">REVENUE</div>
+                <div className="text-xs font-bold text-white">$45.5K</div>
               </div>
-              <div className="p-2 rounded bg-[#080e1c] border border-[#1b2b48]">
-                <div className="text-[10px] text-zinc-400">PUNCH_CLOCK</div>
-                <div className="text-xs sm:text-sm font-bold text-[#00ff66]">99.2% IN-TIME</div>
+              <div className="p-1.5 rounded bg-[#080e1c] border border-[#1b2b48] text-center">
+                <div className="text-[9px] text-zinc-400">ORDERS</div>
+                <div className="text-xs font-bold text-[#00ff66]">700</div>
               </div>
-              <div className="p-2 rounded bg-[#080e1c] border border-[#1b2b48]">
-                <div className="text-[10px] text-zinc-400">STOCK_VAL</div>
-                <div className="text-xs sm:text-sm font-bold text-[#00f0ff]">ETB 4.2M</div>
-              </div>
-            </div>
-
-            <div className="space-y-1 pt-1 text-[11px]">
-              <div className="flex justify-between text-zinc-400 pb-1 border-b border-[#141e30]">
-                <span>MODULE_THREAD</span>
-                <span>STATUS</span>
-                <span>POLL_LATENCY</span>
-              </div>
-              <div className="flex justify-between text-zinc-300">
-                <span className="text-[#00f0ff]">hr_attendance_service</span>
-                <span className="text-[#00ff66]">[SYNCHRONIZED]</span>
-                <span>12ms</span>
-              </div>
-              <div className="flex justify-between text-zinc-300">
-                <span className="text-purple-400">warehouse_billing_tx</span>
-                <span className="text-[#00ff66]">[ACID_COMMITTED]</span>
-                <span>8ms</span>
+              <div className="p-1.5 rounded bg-[#080e1c] border border-[#1b2b48] text-center">
+                <div className="text-[9px] text-zinc-400">CUSTOMERS</div>
+                <div className="text-xs font-bold text-[#00f0ff]">230</div>
               </div>
             </div>
-
-            <div className="pt-2 border-t border-[#1b2b48] flex items-center justify-between text-[10px] text-zinc-500">
-              <span>PostgreSQL Multi-Tenant Schema</span>
-              <span>REST & WebSocket Daemon</span>
-            </div>
-          </div>
-        );
-
-      case 'attendance':
-        return (
-          <div className="aspect-video p-4 sm:p-5 bg-[#03060f] flex flex-col justify-between font-mono text-xs select-none border border-[#16233b]">
-            <div className="flex items-center justify-between pb-2 border-b border-[#1b2b48]">
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-[#00ff66]" />
-                <span className="text-white font-bold">BIOMETRIC_SOCKET_GATEWAY</span>
-              </div>
-              <span className="text-[10px] text-[#00ff66] font-mono">[PORT 4370 TCP LISTENING]</span>
-            </div>
-
-            <div className="space-y-1.5 my-2 font-mono text-[11px]">
-              <div className="p-2 rounded bg-[#080e1c] border border-[#1b2b48] flex justify-between">
-                <span className="text-zinc-400">08:29:12 | EMP_0042</span>
-                <span className="text-[#00ff66]">FINGERPRINT_VERIFIED</span>
-                <span className="text-white">SHIFT_A (+0m)</span>
-              </div>
-              <div className="p-2 rounded bg-[#080e1c] border border-[#1b2b48] flex justify-between">
-                <span className="text-zinc-400">08:31:05 | EMP_0119</span>
-                <span className="text-[#00ff66]">FACIAL_ID_MATCH</span>
-                <span className="text-white">SHIFT_A (+1m)</span>
-              </div>
-              <div className="p-2 rounded bg-[#080e1c] border border-[#1b2b48] flex justify-between">
-                <span className="text-zinc-400">08:47:30 | EMP_0083</span>
-                <span className="text-[#ffb700]">LATE_PENALTY_FLAG</span>
-                <span className="text-[#ffb700]">SHIFT_A (+17m)</span>
-              </div>
-            </div>
-
-            <div className="pt-2 border-t border-[#1b2b48] flex items-center justify-between text-[10px] text-zinc-500">
-              <span>Hardware Sync: ZKTeco / TCP Socket Bridge</span>
-              <span>Zero-Manual Payroll Reconciliation</span>
-            </div>
-          </div>
-        );
-
-      case 'marketplace':
-        return (
-          <div className="aspect-video p-4 sm:p-5 bg-[#03060f] flex flex-col justify-between font-mono text-xs select-none border border-[#16233b]">
-            <div className="flex items-center justify-between pb-2 border-b border-[#1b2b48]">
-              <div className="flex items-center gap-2">
-                <Layers className="w-4 h-4 text-[#00f0ff]" />
-                <span className="text-white font-bold">KIDAME_GEBIYA // SAAS_HUB</span>
-              </div>
-              <span className="text-[10px] text-[#ffb700] font-mono">[MULTI_VENDOR_ACTIVE]</span>
-            </div>
-
-            <div className="grid grid-cols-3 gap-2 my-2">
-              <div className="p-2 rounded bg-[#080e1c] border border-[#1b2b48]">
-                <div className="text-[10px] text-zinc-400">VENDORS</div>
-                <div className="text-xs sm:text-sm font-bold text-white">42 ONBOARDED</div>
-              </div>
-              <div className="p-2 rounded bg-[#080e1c] border border-[#1b2b48]">
-                <div className="text-[10px] text-zinc-400">ORDER_TX</div>
-                <div className="text-xs sm:text-sm font-bold text-[#00ff66]">REALTIME_STREAM</div>
-              </div>
-              <div className="p-2 rounded bg-[#080e1c] border border-[#1b2b48]">
-                <div className="text-[10px] text-zinc-400">PAY_GATEWAY</div>
-                <div className="text-xs sm:text-sm font-bold text-[#00f0ff]">TELEBIRR_API</div>
-              </div>
-            </div>
-
-            <div className="p-2 rounded bg-[#080e1c] border border-[#1b2b48] flex justify-between text-[11px]">
-              <span className="text-zinc-400">Transaction Pool:</span>
-              <span className="text-zinc-200">Cart #4092 - Webhook Verified [200 OK]</span>
-            </div>
-          </div>
-        );
-
-      case 'cars':
-        return (
-          <div className="aspect-video p-4 sm:p-5 bg-[#03060f] flex flex-col justify-between font-mono text-xs select-none border border-[#16233b]">
-            <div className="flex items-center justify-between pb-2 border-b border-[#1b2b48]">
-              <div className="flex items-center gap-2">
-                <Building className="w-4 h-4 text-purple-400" />
-                <span className="text-white font-bold">ARIF_CAR_SELL // INSPECTION_CORE</span>
-              </div>
-              <span className="text-[10px] text-purple-400 font-mono">[VEHICLE_INDEX]</span>
-            </div>
-
-            <div className="space-y-1.5 my-2 text-[11px]">
-              <div className="p-2 rounded bg-[#080e1c] border border-[#1b2b48] flex justify-between">
-                <span>Toyota RAV4 2022</span>
-                <span className="text-zinc-400">18,500 KM • Auto</span>
-                <span className="text-[#00ff66]">[INSPECTION: 100%]</span>
-              </div>
-              <div className="p-2 rounded bg-[#080e1c] border border-[#1b2b48] flex justify-between">
-                <span>Hyundai Tucson 2021</span>
-                <span className="text-zinc-400">32,000 KM • Auto</span>
-                <span className="text-[#00ff66]">[INSPECTION: 98%]</span>
-              </div>
-              <div className="p-2 rounded bg-[#080e1c] border border-[#1b2b48] flex justify-between">
-                <span>Suzuki Dzire 2023</span>
-                <span className="text-zinc-400">9,200 KM • Manual</span>
-                <span className="text-[#00ff66]">[INSPECTION: 100%]</span>
-              </div>
-            </div>
-
-            <div className="pt-2 border-t border-[#1b2b48] flex items-center justify-between text-[10px] text-zinc-500">
-              <span>Technical Inspection Matrix</span>
-              <span>Dealer & WhatsApp Integration</span>
+            <div className="flex justify-between items-center pt-1 border-t border-[#141e30] text-[9px] text-zinc-400">
+              <span className="text-[#00ff66]">[ACID_COMMITTED]</span>
+              <span>PostgreSQL &bull; Laravel</span>
             </div>
           </div>
         );
 
       default:
-        return null;
+        return (
+          <div className="w-full h-full p-3.5 bg-[#03060f] flex flex-col justify-center items-center font-mono text-center">
+            <Server className="w-8 h-8 text-[#00f0ff] mb-2" />
+            <div className="text-xs font-bold text-white">{project.shortTitle || project.title}</div>
+            <div className="text-[10px] text-zinc-400 mt-1">{project.metric}</div>
+          </div>
+        );
     }
   };
 
   return (
-    <section id="projects" className={`relative py-24 lg:py-32 border-t transition-colors duration-300 overflow-hidden bg-transparent ${
-      isDark ? 'border-[#1b253b]' : 'border-slate-200'
-    }`}>
-      {/* Background Lighting */}
-      <div className={`absolute top-1/3 right-10 w-96 h-96 rounded-full blur-3xl pointer-events-none ${
-        isDark ? 'bg-[#00f0ff]/[0.03]' : 'bg-blue-400/[0.04]'
-      }`} />
+    <section
+      id="projects"
+      className={`relative py-20 lg:py-28 border-t transition-colors duration-300 overflow-hidden bg-transparent ${
+        isDark ? 'border-[#1b253b]' : 'border-slate-200'
+      }`}
+    >
+      {/* Subtle Background Lighting Accent */}
+      <div
+        className={`absolute top-1/4 right-8 w-96 h-96 rounded-full blur-3xl pointer-events-none ${
+          isDark ? 'bg-[#00f0ff]/[0.03]' : 'bg-blue-400/[0.04]'
+        }`}
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Masthead */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
+        {/* Section Header & Navigation Controls */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
           <div className="max-w-2xl">
             <div className="section-eyebrow flex items-center gap-2">
               <span className={isDark ? 'text-[#00ff66]' : 'text-blue-600'}>&gt;&gt;</span>
               <span className={isDark ? 'text-[#00ff66]' : 'text-blue-600'}>PRODUCTION WORK &amp; CASE STUDIES</span>
             </div>
-            <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-black font-mono tracking-tight ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>
+            <h2
+              className={`text-2xl sm:text-3xl lg:text-4xl font-black font-mono tracking-tight ${
+                isDark ? 'text-white' : 'text-gray-900'
+              }`}
+            >
               Featured Projects &amp; Software
             </h2>
-            <p className={`text-sm sm:text-base font-mono mt-3 max-w-xl ${
-              isDark ? 'text-zinc-400' : 'text-gray-600'
-            }`}>
-              Engineered to eliminate operational friction, scale seamlessly under high load, and deliver exceptional developer-grade reliability.
+            <p
+              className={`text-xs sm:text-sm font-mono mt-2 max-w-xl ${
+                isDark ? 'text-zinc-400' : 'text-gray-600'
+              }`}
+            >
+              Production systems engineered for scale, zero operational friction, and verified reliability.
             </p>
           </div>
 
-          {/* Category Tabs */}
-          <div className="flex flex-wrap gap-2">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveFilter(cat)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all ${
-                  activeFilter === cat
-                    ? isDark
-                      ? 'bg-[#00ff66] text-black shadow-[0_0_20px_rgba(0,255,102,0.3)]'
-                      : 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                    : isDark
-                      ? 'bg-[#0a0e1c] text-zinc-400 hover:text-white border border-[#1b253b]'
-                      : 'bg-white text-gray-600 hover:text-gray-900 border border-gray-200 shadow-sm'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+          {/* Slider Arrow Controls with Micro-Interactions */}
+          <div className="flex items-center gap-2.5 self-start md:self-end">
+            <motion.button
+              whileHover={{ scale: canScrollLeft ? 1.08 : 1 }}
+              whileTap={{ scale: canScrollLeft ? 0.92 : 1 }}
+              onClick={() => handleScroll('left')}
+              disabled={!canScrollLeft}
+              aria-label="Scroll left"
+              className={`p-2.5 rounded-xl border transition-all duration-200 ${
+                canScrollLeft
+                  ? isDark
+                    ? 'bg-[#0a0f1e] text-white border-[#1e2a44] hover:border-[#00ff66] hover:text-[#00ff66] shadow-[0_0_15px_rgba(0,255,102,0.15)]'
+                    : 'bg-white text-gray-900 border-gray-200 hover:border-blue-500 hover:text-blue-600 shadow-md'
+                  : 'opacity-40 cursor-not-allowed border-transparent text-zinc-500'
+              }`}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: canScrollRight ? 1.08 : 1 }}
+              whileTap={{ scale: canScrollRight ? 0.92 : 1 }}
+              onClick={() => handleScroll('right')}
+              disabled={!canScrollRight}
+              aria-label="Scroll right"
+              className={`p-2.5 rounded-xl border transition-all duration-200 ${
+                canScrollRight
+                  ? isDark
+                    ? 'bg-[#0a0f1e] text-white border-[#1e2a44] hover:border-[#00ff66] hover:text-[#00ff66] shadow-[0_0_15px_rgba(0,255,102,0.15)]'
+                    : 'bg-white text-gray-900 border-gray-200 hover:border-blue-500 hover:text-blue-600 shadow-md'
+                  : 'opacity-40 cursor-not-allowed border-transparent text-zinc-500'
+              }`}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </motion.button>
           </div>
         </div>
 
-        {/* Project Case Studies Array */}
-        <div className="space-y-12 lg:space-y-16">
-          <AnimatePresence mode="wait">
-            {filteredProjects.map((project, index) => {
-              const isEven = index % 2 === 0;
+        {/* Category Filter Pills with Floating Spring Animation */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-none mb-6">
+          {categories.map((cat) => {
+            const count =
+              cat === 'All'
+                ? projectsData.length
+                : projectsData.filter((p) => p.category === cat).length;
+            const isSelected = activeFilter === cat;
 
-              return (
-                <motion.article
-                  key={project.id}
-                  initial={{ opacity: 0, y: 25 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-50px' }}
-                  transition={{ duration: 0.5 }}
-                  className={`terminal-window p-5 sm:p-7 lg:p-8 rounded-3xl border transition-all duration-300 relative overflow-hidden group ${
-                    isDark
-                      ? 'bg-[#070b16] border-[#1b2a46] hover:border-cyan-500/50 shadow-2xl'
-                      : 'bg-white border-gray-200 hover:border-blue-300 shadow-lg'
+            return (
+              <button
+                key={cat}
+                onClick={() => {
+                  setActiveFilter(cat);
+                  if (scrollContainerRef.current) {
+                    scrollContainerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+                  }
+                }}
+                className={`relative px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition-all duration-200 flex items-center gap-2 ${
+                  isSelected
+                    ? isDark
+                      ? 'text-black font-extrabold'
+                      : 'text-white font-extrabold'
+                    : isDark
+                      ? 'bg-[#090d18] text-zinc-400 hover:text-white border border-[#1b253b]'
+                      : 'bg-white text-gray-600 hover:text-gray-900 border border-gray-200 shadow-sm'
+                }`}
+              >
+                {isSelected && (
+                  <motion.div
+                    layoutId="activeFilterPill"
+                    className={`absolute inset-0 rounded-xl ${
+                      isDark
+                        ? 'bg-[#00ff66] shadow-[0_0_20px_rgba(0,255,102,0.35)]'
+                        : 'bg-blue-600 shadow-md shadow-blue-500/25'
+                    }`}
+                    transition={{ type: 'spring', stiffness: 450, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{cat}</span>
+                <span
+                  className={`relative z-10 text-[10px] px-1.5 py-0.2 rounded-full ${
+                    isSelected
+                      ? isDark
+                        ? 'bg-black/25 text-black'
+                        : 'bg-white/25 text-white'
+                      : isDark
+                        ? 'bg-white/5 text-zinc-500'
+                        : 'bg-gray-100 text-gray-500'
                   }`}
                 >
-                  <div
-                    className={`grid lg:grid-cols-12 gap-8 lg:gap-10 items-center ${
-                      isEven ? '' : 'lg:flex-row-reverse'
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Horizontal Animated Project Showcase */}
+        <div
+          className="relative"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          <div
+            ref={scrollContainerRef}
+            className="flex gap-5 overflow-x-auto pb-4 pt-1 snap-x snap-mandatory scrollbar-none scroll-smooth -mx-4 px-4 sm:mx-0 sm:px-0"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            <AnimatePresence mode="popLayout">
+              {filteredProjects.map((project, index) => {
+                return (
+                  <motion.article
+                    key={project.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.94, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.94 }}
+                    whileHover={{
+                      y: -6,
+                      transition: { duration: 0.25, ease: 'easeOut' }
+                    }}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 300,
+                      damping: 24,
+                      delay: index * 0.04
+                    }}
+                    className={`w-[290px] sm:w-[320px] md:w-[340px] shrink-0 snap-start rounded-2xl border flex flex-col justify-between transition-all duration-300 group overflow-hidden ${
+                      isDark
+                        ? 'bg-[#080d1a]/95 border-[#1b2a46] hover:border-[#00ff66]/60 shadow-xl hover:shadow-[0_0_30px_rgba(0,255,102,0.14)]'
+                        : 'bg-white border-gray-200 hover:border-blue-400 shadow-md hover:shadow-xl'
                     }`}
                   >
-                    
-                    {/* Visual Preview Frame (6 cols) */}
-                    <div className={`lg:col-span-6 ${isEven ? 'lg:order-1' : 'lg:order-2'}`}>
-                      <div className="relative rounded-lg overflow-hidden bg-[#03050a] border border-[#1b2b48] shadow-2xl group-hover:border-[#00ff66]/40 transition-colors">
+                    <div>
+                      {/* Compact Preview Header (Aspect 16:10) */}
+                      <div className="relative aspect-[16/10] overflow-hidden bg-[#03060f] border-b border-[#16233b]">
                         
-                        {/* Chrome Header */}
-                        <div className="px-3 py-2 bg-[#0a0f1e] border-b border-[#1b2b48] flex items-center justify-between text-xs font-mono">
-                          <div className="flex items-center gap-2">
+                        {/* Chrome Header Bar */}
+                        <div className="absolute top-0 inset-x-0 z-10 px-2.5 py-1.5 bg-[#0a0f1e]/90 backdrop-blur-md border-b border-[#1b2b48] flex items-center justify-between text-[10px] font-mono select-none">
+                          <div className="flex items-center gap-1.5">
                             <span className="w-2 h-2 rounded-full bg-red-500/80" />
                             <span className="w-2 h-2 rounded-full bg-amber-500/80" />
                             <span className="w-2 h-2 rounded-full bg-emerald-500/80" />
-                            <span className="text-[11px] text-zinc-400 ml-2 truncate max-w-[220px]">
-                              system://{project.id}.prod
+                            <span className="text-[10px] text-zinc-400 ml-1 truncate max-w-[140px]">
+                              {project.id}.sys
                             </span>
                           </div>
-                          <span className="hud-badge-green text-[10px] py-0.5 px-2">
+                          <span className="text-[9px] text-[#00ff66] font-mono font-bold tracking-tight">
                             {project.metric}
                           </span>
                         </div>
 
-                        {/* Image Asset or Technical UI Simulation */}
-                        {project.image ? (
-                          <div className="relative aspect-video overflow-hidden bg-black flex items-center justify-center p-2">
-                            <img
-                              src={project.image}
-                              alt={project.title}
-                              className="w-full h-full object-cover object-top rounded group-hover:scale-[1.02] transition-transform duration-500"
-                              loading="lazy"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-30 group-hover:opacity-10 transition-opacity" />
-                          </div>
-                        ) : (
-                          renderSimulatedUI(project.mockupType, project)
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Technical Specifications (6 cols) */}
-                    <div className={`lg:col-span-6 space-y-4 ${isEven ? 'lg:order-2' : 'lg:order-1'}`}>
-                      
-                      {/* Meta Tags */}
-                      <div className="flex items-center gap-2">
-                        <span className="hud-badge-cyan text-[11px] font-mono">{project.category}</span>
-                        <span className="hud-badge-dim text-[11px] font-mono">
-                          {project.status}
-                        </span>
+                        {/* Image Preview or Micro Mockup with Smooth Loading */}
+                        <div className="w-full h-full pt-6">
+                          <ProjectCardMedia
+                            project={project}
+                            renderCompactMockup={renderCompactMockup}
+                            isDark={isDark}
+                          />
+                        </div>
                       </div>
 
-                      {/* Title & Subtitle */}
-                      <div>
-                        <h3 className={`text-xl sm:text-2xl font-black tracking-tight transition-colors ${
-                          isDark ? 'text-white group-hover:text-cyan-400' : 'text-gray-900 group-hover:text-blue-600'
-                        }`}>
-                          {project.title}
-                        </h3>
-                        <p className={`text-xs font-mono mt-1 ${isDark ? 'text-cyan-400' : 'text-blue-600'}`}>
-                          &gt; {project.subtitle}
-                        </p>
-                      </div>
+                      {/* Card Body - Minimized Content */}
+                      <div className="p-4 sm:p-5 space-y-3">
+                        {/* Category & Status Pill */}
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="hud-badge-cyan text-[10px] py-0.5 px-2 font-mono">
+                            {project.category}
+                          </span>
+                          <span className="text-[10px] font-mono text-zinc-500 truncate">
+                            {project.status}
+                          </span>
+                        </div>
 
-                      {/* Solution Overview */}
-                      <p className={`text-xs sm:text-sm leading-relaxed font-mono ${
-                        isDark ? 'text-zinc-300' : 'text-gray-700'
-                      }`}>
-                        {project.solution}
-                      </p>
-
-                      {/* Key Features Matrix */}
-                      <div className="grid sm:grid-cols-2 gap-2 pt-1">
-                        {project.features.slice(0, 4).map((feature, fIdx) => (
-                          <div key={fIdx} className={`text-xs flex items-start gap-2 font-mono ${
-                            isDark ? 'text-zinc-400' : 'text-gray-600'
-                          }`}>
-                            <span className={`font-bold ${isDark ? 'text-[#00ff66]' : 'text-blue-600'}`}>&gt;</span>
-                            <span>{feature}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Applied Stack */}
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {project.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className={`px-2 py-0.5 rounded text-[11px] font-mono border ${
-                              isDark ? 'bg-[#0c1424] border-[#1b2b48] text-[#00f0ff]' : 'bg-blue-50 border-blue-200 text-blue-700'
+                        {/* Title */}
+                        <div>
+                          <h3
+                            className={`text-base font-bold font-mono tracking-tight leading-snug line-clamp-1 transition-colors ${
+                              isDark
+                                ? 'text-white group-hover:text-[#00f0ff]'
+                                : 'text-gray-900 group-hover:text-blue-600'
                             }`}
                           >
-                            #{tag}
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* Action Triggers */}
-                      <div className={`flex items-center gap-3 pt-3 border-t ${
-                        isDark ? 'border-[#1b2b48]' : 'border-gray-200'
-                      }`}>
-                        {project.liveUrl && project.liveUrl !== '#' && (
-                          <a
-                            href={project.liveUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn-cyber-primary text-xs py-2 px-3.5"
+                            {project.shortTitle || project.title}
+                          </h3>
+                          <p
+                            className={`text-[11px] font-mono truncate mt-0.5 ${
+                              isDark ? 'text-cyan-400' : 'text-blue-600'
+                            }`}
                           >
-                            <span>LAUNCH_SYSTEM</span>
-                            <ExternalLink className="w-3.5 h-3.5" />
-                          </a>
-                        )}
+                            &gt; {project.subtitle}
+                          </p>
+                        </div>
 
-                        {project.githubUrl && (
-                          <a
-                            href={project.githubUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn-cyber-secondary text-xs py-2 px-3.5"
-                          >
-                            <Github className="w-3.5 h-3.5" />
-                            <span>SOURCE_REPO</span>
-                          </a>
-                        )}
+                        {/* Short Solution Summary (1-2 sentences) */}
+                        <p
+                          className={`text-xs font-mono line-clamp-2 leading-relaxed ${
+                            isDark ? 'text-zinc-300' : 'text-gray-600'
+                          }`}
+                        >
+                          {project.solution}
+                        </p>
+
+                        {/* Core Tech Stack (Compact 3-4 Tags) */}
+                        <div className="flex flex-wrap gap-1 pt-1">
+                          {project.tags.slice(0, 3).map((tag) => (
+                            <span
+                              key={tag}
+                              className={`px-2 py-0.5 rounded text-[10px] font-mono border ${
+                                isDark
+                                  ? 'bg-[#0c1424] border-[#1b2b48] text-zinc-300'
+                                  : 'bg-slate-50 border-slate-200 text-slate-700'
+                              }`}
+                            >
+                              #{tag}
+                            </span>
+                          ))}
+                          {project.tags.length > 3 && (
+                            <span
+                              className={`px-1.5 py-0.5 rounded text-[10px] font-mono border ${
+                                isDark
+                                  ? 'bg-[#0c1424] border-[#1b2b48] text-zinc-500'
+                                  : 'bg-slate-50 border-slate-200 text-slate-500'
+                              }`}
+                            >
+                              +{project.tags.length - 3}
+                            </span>
+                          )}
+                        </div>
                       </div>
-
                     </div>
 
-                  </div>
-                </motion.article>
-              );
-            })}
-          </AnimatePresence>
+                    {/* Card Footer - Action Buttons */}
+                    <div
+                      className={`p-4 pt-2.5 border-t flex items-center justify-between gap-2 text-xs font-mono ${
+                        isDark ? 'border-[#1b2b48]' : 'border-gray-100'
+                      }`}
+                    >
+                      {project.liveUrl && project.liveUrl !== '#' ? (
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-cyber-primary text-[11px] py-1.5 px-3 flex-1 justify-center"
+                        >
+                          <span>LIVE DEMO</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      ) : (
+                        <span
+                          className={`text-[11px] py-1.5 px-3 rounded-lg border font-mono flex-1 text-center truncate ${
+                            isDark
+                              ? 'bg-white/[0.02] border-[#1b2b48] text-zinc-500'
+                              : 'bg-slate-50 border-slate-200 text-slate-400'
+                          }`}
+                        >
+                          ENTERPRISE SYS
+                        </span>
+                      )}
+
+                      {project.githubUrl && (
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-cyber-secondary text-[11px] py-1.5 px-3 flex-1 justify-center"
+                        >
+                          <Github className="w-3 h-3" />
+                          <span>SOURCE</span>
+                        </a>
+                      )}
+                    </div>
+                  </motion.article>
+                );
+              })}
+            </AnimatePresence>
+          </div>
+
+          {/* Indicator Track & Active Dots & Animated Progress Bar */}
+          <div className="flex flex-col sm:flex-row items-center justify-between pt-4 mt-2 gap-3">
+            <div className="flex items-center gap-3">
+              <span className="text-[11px] font-mono text-zinc-500">
+                Showing {filteredProjects.length} production projects
+              </span>
+              {/* Animated Progress Bar */}
+              <div
+                className={`w-28 h-1 rounded-full overflow-hidden ${
+                  isDark ? 'bg-[#142035]' : 'bg-gray-200'
+                }`}
+              >
+                <motion.div
+                  className={`h-full rounded-full ${
+                    isDark ? 'bg-[#00ff66]' : 'bg-blue-600'
+                  }`}
+                  style={{ width: `${Math.max(10, scrollProgress)}%` }}
+                  transition={{ ease: 'easeOut', duration: 0.2 }}
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              {filteredProjects.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => scrollToCard(i)}
+                  aria-label={`Go to slide ${i + 1}`}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    activeIndex === i
+                      ? isDark
+                        ? 'w-6 bg-[#00ff66] shadow-[0_0_8px_rgba(0,255,102,0.6)]'
+                        : 'w-6 bg-blue-600'
+                      : isDark
+                        ? 'w-1.5 bg-[#1b2b48] hover:bg-zinc-600'
+                        : 'w-1.5 bg-gray-300 hover:bg-gray-400'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
 
       </div>

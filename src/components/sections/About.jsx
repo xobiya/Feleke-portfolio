@@ -82,6 +82,7 @@ export default function About() {
                   alt="Feleke Eshetu — Full-Stack Developer"
                   className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
                   loading="lazy"
+                  decoding="async"
                 />
 
                 {/* Bottom Gradient Metadata Strip */}

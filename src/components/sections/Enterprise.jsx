@@ -19,8 +19,8 @@ export default function Enterprise() {
       icon: Building
     },
     {
-      title: "Hardware Biometric Attendance",
-      desc: "Direct TCP/Socket sync with fingerprint & facial recognition devices.",
+      title: "Automated Operations & Workflow",
+      desc: "Real-time task synchronization, audit logging, and automated business event pipelines.",
       icon: Clock
     },
     {

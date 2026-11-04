@@ -225,7 +225,8 @@ export default function Hero() {
                   src={felekeDeskPhoto}
                   alt="Feleke Eshetu — Software Developer"
                   className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
-                  priority="true"
+                  fetchPriority="high"
+                  decoding="async"
                 />
 
                 {/* Corner Crosshairs */}
